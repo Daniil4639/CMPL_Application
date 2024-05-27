@@ -2,7 +2,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
@@ -30,15 +29,7 @@
          <children>
             <ScrollPane layoutX="113.0" layoutY="119.0" prefHeight="480.0" prefWidth="785.0">
                <content>
-                  <TableView prefHeight="91.0" prefWidth="200.0">
-                     <columns>
-                        <TableColumn prefWidth="75.0" text="Column X" />
-                        <TableColumn prefWidth="75.0" text="Column X" />
-                        <TableColumn prefWidth="75.0" text="Column X" />
-                        <TableColumn prefWidth="75.0" text="Column X" />
-                        <TableColumn prefWidth="75.0" text="Column X" />
-                     </columns>
-                  </TableView>
+                  <TableView fx:id="machineTable" prefHeight="205.0" prefWidth="5.0" />
                </content>
             </ScrollPane>
          </children>

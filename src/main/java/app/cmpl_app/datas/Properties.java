@@ -1,5 +1,6 @@
-package datas;
+package app.cmpl_app.datas;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Properties {
@@ -25,7 +26,7 @@ public class Properties {
     public static Properties getDefaultProps() {
         Properties props = new Properties();
         props.operationsCount = 1;
-        props.operationsSizes.set(0, 1);
+        props.operationsSizes = new ArrayList<>(List.of(1));
         props.logicSize = 1;
         props.addressSize = 1;
 
