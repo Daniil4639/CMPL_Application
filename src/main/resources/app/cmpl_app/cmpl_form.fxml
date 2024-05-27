@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="660.0" prefWidth="1000.0" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.cmpl_app.CMPL_Controller">
+   <children>
+      <Pane fx:id="contentPanel3" layoutX="76.0" layoutY="33.0" prefHeight="627.0" prefWidth="924.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 50px; -fx-border-color: #000000; -fx-border-radius: 46px; -fx-border-width: 5px;" />
+      <Pane fx:id="contentPanel2" layoutX="64.0" layoutY="20.0" prefHeight="627.0" prefWidth="924.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 50px; -fx-border-color: #000000; -fx-border-radius: 46px; -fx-border-width: 5px;">
+         <effect>
+            <DropShadow />
+         </effect>
+      </Pane>
+      <Pane fx:id="contentPanel1" layoutX="52.0" layoutY="7.0" prefHeight="627.0" prefWidth="924.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 50px; -fx-border-color: #000000; -fx-border-radius: 46px; -fx-border-width: 5px;">
+         <effect>
+            <DropShadow />
+         </effect>
+         <children>
+            <ScrollPane layoutX="113.0" layoutY="119.0" prefHeight="480.0" prefWidth="785.0">
+               <content>
+                  <TableView prefHeight="91.0" prefWidth="200.0">
+                     <columns>
+                        <TableColumn prefWidth="75.0" text="Column X" />
+                        <TableColumn prefWidth="75.0" text="Column X" />
+                        <TableColumn prefWidth="75.0" text="Column X" />
+                        <TableColumn prefWidth="75.0" text="Column X" />
+                        <TableColumn prefWidth="75.0" text="Column X" />
+                     </columns>
+                  </TableView>
+               </content>
+            </ScrollPane>
+         </children>
+      </Pane>
+      <VBox fx:id="borderPanel" layoutY="105.0" prefHeight="555.0" prefWidth="141.0" style="-fx-background-color: #000000;">
+         <children>
+            <Pane fx:id="modeButton1" onMouseClicked="#switchMode1" prefHeight="185.0" prefWidth="149.0" style="-fx-background-color: #fc625d; -fx-border-color: #363336; -fx-border-width: 2px;">
+               <children>
+                  <VBox alignment="CENTER" layoutX="11.0" layoutY="32.0" prefHeight="122.0" prefWidth="71.0">
+                     <children>
+                        <ImageView fx:id="modeImage1" fitHeight="59.0" fitWidth="84.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../icons/table_1.png" />
+                           </image>
+                        </ImageView>
+                        <Text fx:id="modeName1" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #000000;" text="Machine Table">
+                           <font>
+                              <Font name="Arial" size="18.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets top="3.0" />
+                           </VBox.margin>
+                        </Text>
+                     </children>
+                  </VBox>
+               </children>
+            </Pane>
+            <Pane fx:id="modeButton2" layoutX="10.0" layoutY="10.0" onMouseClicked="#switchMode2" prefHeight="185.0" prefWidth="149.0" style="-fx-background-color: #505050; -fx-border-color: #000000; -fx-border-width: 2px;">
+               <VBox.margin>
+                  <Insets top="1.0" />
+               </VBox.margin>
+               <children>
+                  <VBox alignment="CENTER" layoutX="24.0" layoutY="32.0" prefHeight="122.0" prefWidth="71.0">
+                     <children>
+                        <ImageView fx:id="modeImage2" fitHeight="59.0" fitWidth="84.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../icons/engine.png" />
+                           </image>
+                        </ImageView>
+                        <Text fx:id="modeName2" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #FFFFFF;" text="Parameters">
+                           <font>
+                              <Font name="Arial" size="18.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets top="3.0" />
+                           </VBox.margin>
+                        </Text>
+                     </children>
+                  </VBox>
+               </children>
+            </Pane>
+            <Pane fx:id="modeButton3" layoutX="10.0" layoutY="110.0" onMouseClicked="#switchMode3" prefHeight="183.0" prefWidth="141.0" style="-fx-background-color: #505050; -fx-border-color: #000000; -fx-border-width: 2px;">
+               <VBox.margin>
+                  <Insets top="1.0" />
+               </VBox.margin>
+               <children>
+                  <VBox alignment="CENTER" layoutX="34.0" layoutY="31.0" prefHeight="122.0" prefWidth="71.0">
+                     <children>
+                        <ImageView fx:id="modeImage3" fitHeight="59.0" fitWidth="84.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../icons/modeling.png" />
+                           </image>
+                        </ImageView>
+                        <Text fx:id="modeName3" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #FFFFFF;" text="Modeling">
+                           <font>
+                              <Font name="Arial" size="18.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets top="3.0" />
+                           </VBox.margin>
+                        </Text>
+                     </children>
+                  </VBox>
+               </children>
+            </Pane>
+         </children>
+         <effect>
+            <DropShadow />
+         </effect>
+      </VBox>
+      <AnchorPane fx:id="upperPanel" prefHeight="105.0" prefWidth="1000.0" style="-fx-background-color: #272727;">
+         <children>
+            <VBox layoutX="14.0" layoutY="4.0" prefHeight="89.0" prefWidth="231.0">
+               <children>
+                  <HBox alignment="TOP_CENTER" prefHeight="50.0" prefWidth="231.0">
+                     <children>
+                        <ImageView fitHeight="41.0" fitWidth="78.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../icons/emblem.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </HBox.margin>
+                           <effect>
+                              <DropShadow blurType="ONE_PASS_BOX">
+                                 <color>
+                                    <Color red="1.0" />
+                                 </color>
+                              </DropShadow>
+                           </effect>
+                        </ImageView>
+                        <Text fill="WHITE" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="CMPL" textAlignment="CENTER" wrappingWidth="100.353515625">
+                           <font>
+                              <Font name="Nirmala UI Semilight" size="38.0" />
+                           </font>
+                           <effect>
+                              <DropShadow>
+                                 <color>
+                                    <Color red="1.0" opacity="0.7862595319747925" />
+                                 </color>
+                              </DropShadow>
+                           </effect>
+                        </Text>
+                     </children>
+                  </HBox>
+                  <Pane prefHeight="18.0" prefWidth="149.0" style="-fx-background-color: #D52A2A; -fx-background-radius: 6px; -fx-border-color: #FFFFFF; -fx-border-radius: 6px;" />
+                  <HBox prefHeight="40.0" prefWidth="231.0">
+                     <children>
+                        <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Program for simulating control machines with programmable logic." textAlignment="CENTER" wrappingWidth="230.560546875" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <HBox alignment="CENTER" layoutX="625.0" layoutY="32.0" prefHeight="41.0" prefWidth="361.0">
+               <children>
+                  <Pane fx:id="newProjectButton" onMouseEntered="#newProjectButtonEntered" onMouseExited="#newProjectButtonExited" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #272727; -fx-background-radius: 3px;">
+                     <children>
+                        <Text fill="WHITE" layoutX="5.0" layoutY="20.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New project">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
+                     </HBox.margin>
+                  </Pane>
+                  <Pane fx:id="openProjectButton" layoutX="10.0" layoutY="10.0" onMouseEntered="#openProjectButtonEntered" onMouseExited="#openProjectButtonExited" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #272727; -fx-background-radius: 3px;">
+                     <children>
+                        <Text fill="WHITE" layoutX="2.0" layoutY="20.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Open project">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
+                     </HBox.margin>
+                  </Pane>
+                  <Pane fx:id="instructionButton" layoutX="110.0" layoutY="10.0" onMouseEntered="#instructionButtonEntered" onMouseExited="#instructionButtonExited" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #272727; -fx-background-radius: 3px;">
+                     <children>
+                        <Text fill="WHITE" layoutX="10.0" layoutY="21.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Instruction">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
+                     </HBox.margin>
+                  </Pane>
+               </children>
+            </HBox>
+         </children>
+         <effect>
+            <DropShadow />
+         </effect>
+      </AnchorPane>
+   </children>
+</AnchorPane>
