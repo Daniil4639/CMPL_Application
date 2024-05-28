@@ -2,12 +2,15 @@ package app.cmpl_app;
 
 import app.cmpl_app.datas.MachineTableRow;
 import app.cmpl_app.datas.Properties;
+import app.cmpl_app.utilities.SlideUtils;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -15,6 +18,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.net.URL;
@@ -40,9 +44,28 @@ public class CMPL_Controller implements Initializable {
 
     private Properties props;
     private List<TableColumn<MachineTableRow, String>> columns;
+    private List<MachineTableRow> rows;
+
+    //------Slide_1--------
 
     @FXML
     private TableView<MachineTableRow> machineTable;
+
+    //------Slide_1--------
+
+    //------Slide_2--------
+
+    @FXML
+    private TableView<Properties> formatTable;
+
+    @FXML
+    private Label formatPlusButton;
+    @FXML
+    private Label formatMinusButton;
+
+    //------Slide_2--------
+
+    //------System--------
 
     @FXML
     private AnchorPane upperPanel;
@@ -84,14 +107,19 @@ public class CMPL_Controller implements Initializable {
     @FXML
     private Pane instructionButton;
 
+    //------System--------
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         props = Properties.getDefaultProps();
         columns = new ArrayList<>();
-        machineTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-        machineTable.setEditable(true);
+        rows = new ArrayList<>();
 
-        fillMachineTable();
+        machineTable.setEditable(true);
+        formatTable.setEditable(true);
+
+        SlideUtils.fillMachineTable(machineTable, columns, rows, props);
+        SlideUtils.fillFormatTable(formatTable, props);
     }
 
     @FXML
@@ -159,6 +187,32 @@ public class CMPL_Controller implements Initializable {
         instructionButton.setEffect(null);
     }
 
+    @FXML
+    void formatMinusClicked(MouseEvent event) {
+        formatMinusButton.setEffect(null);
+
+        if (props.getOperationsCount() > 0) {
+            props.getOperationsSizes().remove(props.getOperationsCount() - 1);
+            props.setOperationsCount(props.getOperationsCount() - 1);
+        }
+
+        SlideUtils.fillFormatTable(formatTable, props);
+
+        formatMinusButton.setEffect(new DropShadow(0.5, Color.BLACK));
+    }
+
+    @FXML
+    void formatPlusClicked(MouseEvent event) {
+        formatPlusButton.setEffect(null);
+
+        props.setOperationsCount(props.getOperationsCount() + 1);
+        props.getOperationsSizes().add(1);
+
+        SlideUtils.fillFormatTable(formatTable, props);
+
+        formatPlusButton.setEffect(new DropShadow(0.5, Color.BLACK));
+    }
+
     private void recolorButton1() {
         modeButton1.setStyle(borderButtonStyleActive);
         modeButton2.setStyle(borderButtonStyleInactive);
@@ -203,64 +257,5 @@ public class CMPL_Controller implements Initializable {
 
     private Image findImage(String url) {
         return new Image(Objects.requireNonNull(getClass().getResourceAsStream(url)));
-    }
-
-    private void fillMachineTable() {
-        machineTable.getItems().clear();
-        machineTable.getColumns().clear();
-
-        // инициализация столбца A
-        TableColumn<MachineTableRow, String> aCol = new TableColumn<>("A");
-        aCol.setCellValueFactory(new PropertyValueFactory<>("stage"));
-        aCol.setOnEditCommit(event -> {
-            MachineTableRow row = event.getRowValue();
-            row.setStage(event.getNewValue());
-        });
-        columns.add(aCol);
-
-        // инициализация столбцов Y
-        for (int iter = 1; iter <= props.operationsCount; iter++) {
-
-            TableColumn<MachineTableRow, String> yCol = new TableColumn<>("Y" + iter);
-            int finalIter = iter - 1;
-            yCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getValues().get(finalIter)));
-
-            yCol.setOnEditCommit(event -> {
-                MachineTableRow row = event.getRowValue();
-                row.getValues().set(finalIter, event.getNewValue());
-            });
-
-            columns.add(yCol);
-        }
-
-        // инициализация столбца X
-        TableColumn<MachineTableRow, String> xCol = new TableColumn<>("X");
-        xCol.setCellValueFactory(new PropertyValueFactory<>("logic"));
-        xCol.setOnEditCommit(event -> {
-            MachineTableRow row = event.getRowValue();
-            row.setLogic(event.getNewValue());
-        });
-        columns.add(xCol);
-
-        // инициализация столбца i
-        TableColumn<MachineTableRow, String> iCol = new TableColumn<>("i");
-        iCol.setCellValueFactory(new PropertyValueFactory<>("i"));
-        iCol.setOnEditCommit(event -> {
-            MachineTableRow row = event.getRowValue();
-            row.setI(event.getNewValue());
-        });
-        columns.add(iCol);
-
-        // инициализация столбца A1
-        TableColumn<MachineTableRow, String> a1Col = new TableColumn<>("A1");
-        a1Col.setCellValueFactory(new PropertyValueFactory<>("address"));
-        a1Col.setOnEditCommit(event -> {
-            MachineTableRow row = event.getRowValue();
-            row.setAddress(event.getNewValue());
-        });
-        columns.add(a1Col);
-
-        machineTable.setPrefWidth(75 * columns.size());
-        machineTable.getColumns().addAll(columns);
     }
 }

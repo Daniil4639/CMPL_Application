@@ -1,14 +1,19 @@
 package app.cmpl_app.datas;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Setter
+@Getter
 public class Properties {
 
-    public int operationsCount;
-    public List<Integer> operationsSizes;
-    public int logicSize;
-    public int addressSize;
+    private int operationsCount;
+    private List<Integer> operationsSizes;
+    private int logicSize;
+    private int addressSize;
 
     public boolean isCorrect() {
         if (operationsCount == -1 || logicSize == -1 || addressSize == -1) {
