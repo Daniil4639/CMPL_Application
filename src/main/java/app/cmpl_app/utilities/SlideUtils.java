@@ -1,168 +1,182 @@
 package app.cmpl_app.utilities;
 
-import app.cmpl_app.datas.MachineTableRow;
-import app.cmpl_app.datas.Properties;
+import app.cmpl_app.datas.*;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.util.converter.IntegerStringConverter;
+import javafx.scene.layout.HBox;
 
 import java.util.List;
 
 public class SlideUtils {
 
-    public static void fillMachineTable(TableView<MachineTableRow> machineTable,
-                                        List<TableColumn<MachineTableRow, String>> columns,
-                                        List<MachineTableRow> rows,
-                                        Properties props) {
+    public static void fillMachineTable(TablePackage tables,
+                                        DataPackage data) {
 
-        machineTable.getItems().clear();
-        machineTable.getColumns().clear();
+        tables.machineTable.getItems().clear();
+        tables.machineTable.getColumns().clear();
+
+        // проверка и корректировка массива микроопераций
+        int stagesCount = getStages(data.aCode);
+        while (data.machineRows.size() > stagesCount) {
+            data.machineRows.removeLast();
+        }
+
+        for (int rowIndex = 0; rowIndex < data.machineRows.size(); rowIndex++) {
+            while (data.machineRows.get(rowIndex).getValues().size() > data.props.getOperationsCount()) {
+                data.machineRows.get(rowIndex).getValues().removeLast();
+            }
+        }
+
+        for (int extraRows = data.machineRows.size(); extraRows < stagesCount; extraRows++) {
+            data.machineRows.add(MachineTableRow.getDefaultRow(data.props.getOperationsCount()));
+        }
 
         // инициализация столбца A
-        TableColumn<MachineTableRow, String> aCol = new TableColumn<>("A");
-        aCol.setCellFactory(TextFieldTableCell.forTableColumn());
-        aCol.setCellValueFactory(new PropertyValueFactory<>("stage"));
-        aCol.setOnEditCommit(event -> {
-            MachineTableRow row = event.getRowValue();
-            row.setStage(event.getNewValue());
-        });
-        columns.add(aCol);
+        TableColumn<MachineTableRow, String> aCol = ColumnCreator.getMachineStringColumn("A", "stage");
+        tables.machineTable.getColumns().add(aCol);
 
         // инициализация столбцов Y
-        for (int iter = 1; iter <= props.getOperationsCount(); iter++) {
+        for (int iter = 1; iter <= data.props.getOperationsCount(); iter++) {
 
-            TableColumn<MachineTableRow, String> yCol = new TableColumn<>("Y" + iter);
-            yCol.setCellFactory(TextFieldTableCell.forTableColumn());
-            int finalIter = iter - 1;
-            yCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getValues().get(finalIter)));
-
-            yCol.setOnEditCommit(event -> {
-                MachineTableRow row = event.getRowValue();
-                row.getValues().set(finalIter, event.getNewValue());
-            });
-
-            columns.add(yCol);
+            TableColumn<MachineTableRow, String> yCol = ColumnCreator.getListStringColumn(iter);
+            tables.machineTable.getColumns().add(yCol);
         }
 
         // инициализация столбца X
-        TableColumn<MachineTableRow, String> xCol = new TableColumn<>("X");
-        xCol.setCellFactory(TextFieldTableCell.forTableColumn());
-        xCol.setCellValueFactory(new PropertyValueFactory<>("logic"));
-        xCol.setOnEditCommit(event -> {
-            MachineTableRow row = event.getRowValue();
-            row.setLogic(event.getNewValue());
-        });
-        columns.add(xCol);
+        TableColumn<MachineTableRow, String> xCol = ColumnCreator.getMachineStringColumn("X", "logic");
+        tables.machineTable.getColumns().add(xCol);
 
         // инициализация столбца i
-        TableColumn<MachineTableRow, String> iCol = new TableColumn<>("i");
-        iCol.setCellFactory(TextFieldTableCell.forTableColumn());
-        iCol.setCellValueFactory(new PropertyValueFactory<>("i"));
-        iCol.setOnEditCommit(event -> {
-            MachineTableRow row = event.getRowValue();
-            row.setI(event.getNewValue());
-        });
-        columns.add(iCol);
+        TableColumn<MachineTableRow, String> iCol = ColumnCreator.getMachineStringColumn("i", "i");
+        tables.machineTable.getColumns().add(iCol);
 
         // инициализация столбца A1
-        TableColumn<MachineTableRow, String> a1Col = new TableColumn<>("A1");
-        a1Col.setCellFactory(TextFieldTableCell.forTableColumn());
-        a1Col.setCellValueFactory(new PropertyValueFactory<>("address"));
-        a1Col.setOnEditCommit(event -> {
-            MachineTableRow row = event.getRowValue();
-            row.setAddress(event.getNewValue());
-        });
-        columns.add(a1Col);
+        TableColumn<MachineTableRow, String> a1Col = ColumnCreator.getMachineStringColumn("A1", "address");
+        tables.machineTable.getColumns().add(a1Col);
 
-        for (TableColumn<MachineTableRow, String> column : columns) {
+        for (TableColumn<MachineTableRow, ?> column : tables.machineTable.getColumns()) {
             column.setPrefWidth(90);
             column.setResizable(false);
         }
 
-        machineTable.getColumns().addAll(columns);
+        tables.machineTable.getItems().addAll(data.machineRows);
 
-        machineTable.setPrefWidth(Math.min(790, 90 * columns.size() + 2));
-        machineTable.setPrefHeight(Math.min(480, 50 + 26 * rows.size()));
+        tables.machineTable.setPrefWidth(90 * tables.machineTable.getColumns().size() + 2);
+        tables.machineTable.prefHeightProperty().bind(Bindings.size(tables.formatTable.getItems())
+                .multiply(tables.formatTable.getFixedCellSize()).add(35));
     }
 
-    public static void fillFormatTable(TableView<Properties> formatTable,
-                                       Properties props) {
+    public static void fillFormatTable(TablePackage tables,
+                                       DataPackage data) {
 
-        formatTable.getColumns().clear();
-        formatTable.getItems().clear();
+        tables.formatTable.getColumns().clear();
+        tables.formatTable.getItems().clear();
 
         // инициализация столбца A
-        TableColumn<Properties, Integer> aCol = new TableColumn<>("A");
-        aCol.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
-        aCol.setCellValueFactory(new PropertyValueFactory<>("addressSize"));
-        aCol.setOnEditCommit(event -> {
-            Properties row = event.getRowValue();
-            row.setAddressSize(event.getNewValue());
-
-            formatTable.getItems().set(0, row);
-        });
-        formatTable.getColumns().add(aCol);
+        TableColumn<Properties, Integer> aCol = ColumnCreator.getFormatIntegerColumn(tables,
+                "A", "addressSize", tables.aTable, data.aCode);
+        tables.formatTable.getColumns().add(aCol);
 
         // инициализация столбцов Y
-        for (int iter = 1; iter <= props.getOperationsCount(); iter++) {
+        for (int iter = 1; iter <= data.props.getOperationsCount(); iter++) {
 
-            TableColumn<Properties, Integer> yCol = getYFormatColumn(iter);
-
-            formatTable.getColumns().add(yCol);
+            TableColumn<Properties, Integer> yCol = ColumnCreator.getListIntegerColumn(tables, data, iter);
+            tables.formatTable.getColumns().add(yCol);
         }
 
         // инициализация столбца X
-        TableColumn<Properties, Integer> xCol = new TableColumn<>("X");
-        xCol.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
-        xCol.setCellValueFactory(new PropertyValueFactory<>("logicSize"));
-        xCol.setOnEditCommit(event -> {
-            Properties row = event.getRowValue();
-            row.setLogicSize(event.getNewValue());
-        });
-        formatTable.getColumns().add(xCol);
+        TableColumn<Properties, Integer> xCol = ColumnCreator.getFormatIntegerColumn(tables,
+                "X", "logicSize", tables.xTable, data.xCode);
+        tables.formatTable.getColumns().add(xCol);
 
         // инициализация столбца i
         TableColumn<Properties, String> iCol = new TableColumn<>("i");
         iCol.setCellValueFactory(cb -> new SimpleStringProperty("1"));
-        formatTable.getColumns().add(iCol);
+        tables.formatTable.getColumns().add(iCol);
 
         // инициализация столбца A1
-        TableColumn<Properties, Integer> a1Col = new TableColumn<>("A1");
-        a1Col.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
-        a1Col.setCellValueFactory(new PropertyValueFactory<>("addressSize"));
-        a1Col.setOnEditCommit(event -> {
-            Properties row = event.getRowValue();
-            row.setAddressSize(event.getNewValue());
+        TableColumn<Properties, Integer> a1Col = ColumnCreator.getFormatIntegerColumn(tables,
+                "A1", "addressSize", tables.aTable, data.aCode);
+        tables.formatTable.getColumns().add(a1Col);
 
-            formatTable.getItems().set(0, row);
-        });
-        formatTable.getColumns().add(a1Col);
-
-        for (TableColumn<Properties, ?> tableColumn : formatTable.getColumns()) {
+        for (TableColumn<Properties, ?> tableColumn : tables.formatTable.getColumns()) {
             tableColumn.setPrefWidth(90);
             tableColumn.setResizable(false);
         }
 
-        formatTable.getItems().add(props);
-        formatTable.setPrefWidth(formatTable.getColumns().size() * 90 + 2);
-        formatTable.setPrefHeight(73);
+        tables.formatTable.getItems().add(data.props);
+        tables.formatTable.setFixedCellSize(25);
+        tables.formatTable.setPrefWidth(tables.formatTable.getColumns().size() * 90 + 2);
+        tables.formatTable.prefHeightProperty().bind(Bindings.size(tables.formatTable.getItems())
+                .multiply(tables.formatTable.getFixedCellSize()).add(35));
     }
 
-    private static TableColumn<Properties, Integer> getYFormatColumn(int iter) {
-        TableColumn<Properties, Integer> yCol = new TableColumn<>("Y" + iter);
-        yCol.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
-        int finalIter = iter - 1;
-        yCol.setCellValueFactory(data -> new ReadOnlyObjectWrapper<Integer>(data.getValue()
-                .getOperationsSizes().get(finalIter)));
+    public static void fillCodeTable(TablePackage tablePackage, TableView<SignalEncoding> table,
+                                     List<SignalEncoding> codes, int bit, CodeTableMode mode) {
 
-        yCol.setOnEditCommit(event -> {
-            Properties row = event.getRowValue();
-            row.getOperationsSizes().set(finalIter, event.getNewValue());
-        });
-        return yCol;
+        table.getItems().clear();
+        table.getColumns().clear();
+
+        codes = SignalEncoding.getEncodingByBit(bit);
+
+        switch (mode) {
+            case XMode -> {
+                codes.getFirst().setValue("Const 1");
+                codes.getLast().setValue("Const 0");
+            }
+            case YMode -> {
+                codes.getFirst().setValue("-");
+            }
+        }
+
+        // инициализация столбца code
+        TableColumn<SignalEncoding, String> codeColumn = new TableColumn<>("Code");
+        codeColumn.setCellValueFactory(new PropertyValueFactory<>("code"));
+        table.getColumns().add(codeColumn);
+
+        // инициализация столбца val
+        TableColumn<SignalEncoding, String> valColumn = ColumnCreator.getSignalEncodingStringTableColumn();
+        table.getColumns().add(valColumn);
+
+        for (TableColumn<SignalEncoding, ?> column: table.getColumns()) {
+            column.setPrefWidth(90);
+            column.setResizable(false);
+        }
+
+        table.getItems().addAll(codes);
+        table.setFixedCellSize(25);
+        table.prefHeightProperty().bind(Bindings.size(table.getItems())
+                .multiply(table.getFixedCellSize()).add(35));
+
+        if (mode.equals(CodeTableMode.YMode)) {
+        resizeYBox(tablePackage);
+        }
+    }
+
+    private static void resizeYBox(TablePackage tablePackage) {
+        double maxHeight = 0;
+        for (int i = 0; i < tablePackage.yTables.size(); i++) {
+            if (maxHeight < tablePackage.yTables.get(i).getPrefHeight()) {
+                maxHeight = tablePackage.yTables.get(i).getPrefHeight() + 1;
+            }
+        }
+
+        tablePackage.yBox.setPrefHeight(maxHeight);
+    }
+
+    public static int getStages(List<SignalEncoding> aCodes) {
+        int res = 0;
+        for (SignalEncoding aCode : aCodes) {
+            if (!aCode.getValue().isEmpty()) {
+                res++;
+            }
+        }
+
+        return aCodes.size();
     }
 }

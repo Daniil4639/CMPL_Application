@@ -75,16 +75,93 @@
                </children>
             </VBox>
             <Pane layoutX="96.0" layoutY="120.0" prefHeight="3.0" prefWidth="327.0" style="-fx-background-color: #D52A2A; -fx-background-radius: 6px; -fx-border-color: black; -fx-border-radius: 6px;" />
+            <ScrollPane layoutX="96.0" layoutY="282.0" prefHeight="326.0" prefWidth="200.0" style="-fx-border-color: black;">
+               <effect>
+                  <DropShadow>
+                     <color>
+                        <Color opacity="0.2800000011920929" />
+                     </color>
+                  </DropShadow>
+               </effect>
+               <content>
+                  <TableView fx:id="aTable" prefHeight="45.0" prefWidth="180.0" />
+               </content>
+               <padding>
+                  <Insets left="10.0" top="10.0" />
+               </padding>
+            </ScrollPane>
+            <Label layoutX="136.0" layoutY="251.0" text="&quot;A&quot; codes table:">
+               <font>
+                  <Font name="Arial" size="17.0" />
+               </font>
+            </Label>
+            <Pane layoutX="136.0" layoutY="271.0" prefHeight="3.0" prefWidth="120.0" style="-fx-background-color: #D52A2A; -fx-background-radius: 6px; -fx-border-color: black; -fx-border-radius: 6px;" />
+            <Label layoutX="363.0" layoutY="251.0" text="&quot;X&quot; codes table:">
+               <font>
+                  <Font name="Arial" size="17.0" />
+               </font>
+            </Label>
+            <Pane layoutX="363.0" layoutY="271.0" prefHeight="3.0" prefWidth="120.0" style="-fx-background-color: #D52A2A; -fx-background-radius: 6px; -fx-border-color: black; -fx-border-radius: 6px;" />
+            <Label layoutX="658.0" layoutY="250.0" text="&quot;Y&quot; codes table:">
+               <font>
+                  <Font name="Arial" size="17.0" />
+               </font>
+            </Label>
+            <Pane layoutX="658.0" layoutY="270.0" prefHeight="3.0" prefWidth="120.0" style="-fx-background-color: #D52A2A; -fx-background-radius: 6px; -fx-border-color: black; -fx-border-radius: 6px;" />
+            <ScrollPane layoutX="323.0" layoutY="282.0" prefHeight="326.0" prefWidth="200.0" style="-fx-border-color: black;">
+               <effect>
+                  <DropShadow>
+                     <color>
+                        <Color opacity="0.2800000011920929" />
+                     </color>
+                  </DropShadow>
+               </effect>
+               <padding>
+                  <Insets left="10.0" top="10.0" />
+               </padding>
+               <content>
+                  <TableView prefHeight="45.0" prefWidth="180.0" fx:id="xTable" />
+               </content>
+            </ScrollPane>
+            <ScrollPane layoutX="554.0" layoutY="282.0" prefHeight="326.0" prefWidth="327.0" style="-fx-border-color: black;">
+               <effect>
+                  <DropShadow>
+                     <color>
+                        <Color opacity="0.2800000011920929" />
+                     </color>
+                  </DropShadow>
+               </effect>
+               <padding>
+                  <Insets left="10.0" right="10.0" top="10.0" />
+               </padding>
+               <content>
+                  <HBox fx:id="yBox" prefHeight="255.0" prefWidth="190.0" />
+               </content>
+            </ScrollPane>
          </children>
       </Pane>
-      <Pane fx:id="contentPanel1" layoutX="52.0" layoutY="7.0" prefHeight="627.0" prefWidth="924.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 50px; -fx-border-color: #000000; -fx-border-radius: 46px; -fx-border-width: 5px;" visible="false">
+      <Pane fx:id="contentPanel1" layoutX="52.0" layoutY="7.0" prefHeight="627.0" prefWidth="924.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 50px; -fx-border-color: #000000; -fx-border-radius: 46px; -fx-border-width: 5px;">
          <effect>
             <DropShadow />
          </effect>
          <children>
-            <TableView fx:id="machineTable" layoutX="107.0" layoutY="115.0" prefHeight="480.0" prefWidth="790.0">
+            <ScrollPane layoutX="109.0" layoutY="114.0" prefHeight="491.0" prefWidth="792.0" style="-fx-border-color: black;">
+               <content>
+                  <TableView fx:id="machineTable" prefHeight="111.0" prefWidth="243.0">
                     
             </TableView>
+               </content>
+               <effect>
+                  <DropShadow>
+                     <color>
+                        <Color opacity="0.2800000011920929" />
+                     </color>
+                  </DropShadow>
+               </effect>
+               <padding>
+                  <Insets left="10.0" top="10.0" />
+               </padding>
+            </ScrollPane>
          </children>
       </Pane>
       <VBox fx:id="borderPanel" layoutY="105.0" prefHeight="555.0" prefWidth="141.0" style="-fx-background-color: #000000;">

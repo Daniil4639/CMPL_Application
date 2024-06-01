@@ -1,31 +1,24 @@
 package app.cmpl_app;
 
-import app.cmpl_app.datas.MachineTableRow;
+import app.cmpl_app.datas.*;
 import app.cmpl_app.datas.Properties;
 import app.cmpl_app.utilities.SlideUtils;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class CMPL_Controller implements Initializable {
 
@@ -42,9 +35,8 @@ public class CMPL_Controller implements Initializable {
     private final Image mode3White = findImage("/icons/modeling.png");
     private final Image mode3Black = findImage("/icons/modeling_1.png");
 
-    private Properties props;
-    private List<TableColumn<MachineTableRow, String>> columns;
-    private List<MachineTableRow> rows;
+    private DataPackage data;
+    private TablePackage tables;
 
     //------Slide_1--------
 
@@ -57,11 +49,12 @@ public class CMPL_Controller implements Initializable {
 
     @FXML
     private TableView<Properties> formatTable;
-
     @FXML
-    private Label formatPlusButton;
+    private TableView<SignalEncoding> aTable;
     @FXML
-    private Label formatMinusButton;
+    private TableView<SignalEncoding> xTable;
+    @FXML
+    private HBox yBox;
 
     //------Slide_2--------
 
@@ -111,15 +104,29 @@ public class CMPL_Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        props = Properties.getDefaultProps();
-        columns = new ArrayList<>();
-        rows = new ArrayList<>();
+        yBox.setFillHeight(false);
+        data = new DataPackage();
+        data.aCode = new ArrayList<>();
+        data.xCode = new ArrayList<>();
+        data.yCodes = new ArrayList<>();
+
+        tablePackage();
+        tables.yTables = new ArrayList<>();
+
+        data.props = Properties.getDefaultProps();
+        data.machineRows = new ArrayList<>();
 
         machineTable.setEditable(true);
         formatTable.setEditable(true);
+        aTable.setEditable(true);
+        xTable.setEditable(true);
 
-        SlideUtils.fillMachineTable(machineTable, columns, rows, props);
-        SlideUtils.fillFormatTable(formatTable, props);
+        addFirstYTable();
+
+        SlideUtils.fillFormatTable(tables, data);
+        SlideUtils.fillCodeTable(tables, aTable, data.aCode, data.props.getAddressSize(), CodeTableMode.AMode);
+        SlideUtils.fillCodeTable(tables, xTable, data.xCode, data.props.getLogicSize(), CodeTableMode.XMode);
+        SlideUtils.fillMachineTable(tables, data);
     }
 
     @FXML
@@ -130,6 +137,9 @@ public class CMPL_Controller implements Initializable {
         contentPanel1.toFront();
         borderPanel.toFront();
         upperPanel.toFront();
+
+        modeName1.setText(Integer.toString(SlideUtils.getStages(data.xCode)));
+        SlideUtils.fillMachineTable(tables, data);
     }
 
     @FXML
@@ -189,28 +199,65 @@ public class CMPL_Controller implements Initializable {
 
     @FXML
     void formatMinusClicked(MouseEvent event) {
-        formatMinusButton.setEffect(null);
+        if (data.props.getOperationsCount() > 0) {
+            data.props.getOperationsSizes().remove(data.props.getOperationsCount() - 1);
+            data.props.setOperationsCount(data.props.getOperationsCount() - 1);
 
-        if (props.getOperationsCount() > 0) {
-            props.getOperationsSizes().remove(props.getOperationsCount() - 1);
-            props.setOperationsCount(props.getOperationsCount() - 1);
+            tables.yTables.remove(data.props.getOperationsCount());
+            yBox.getChildren().removeLast();
+            yBox.getChildren().removeLast();
+            data.yCodes.remove(data.props.getOperationsCount());
+
+            yBox.setPrefWidth(95 * yBox.getChildren().size());
         }
 
-        SlideUtils.fillFormatTable(formatTable, props);
-
-        formatMinusButton.setEffect(new DropShadow(0.5, Color.BLACK));
+        SlideUtils.fillFormatTable(tables, data);
     }
 
     @FXML
     void formatPlusClicked(MouseEvent event) {
-        formatPlusButton.setEffect(null);
+        data.props.setOperationsCount(data.props.getOperationsCount() + 1);
+        data.props.getOperationsSizes().add(1);
 
-        props.setOperationsCount(props.getOperationsCount() + 1);
-        props.getOperationsSizes().add(1);
+        TableView<SignalEncoding> newYTable = new TableView<>();
+        newYTable.setPrefWidth(180);
+        newYTable.setEditable(true);
+        tables.yTables.add(newYTable);
+        yBox.getChildren().add(newYTable);
 
-        SlideUtils.fillFormatTable(formatTable, props);
+        Pane isolator = new Pane();
+        isolator.setPrefWidth(10);
+        yBox.getChildren().add(isolator);
 
-        formatPlusButton.setEffect(new DropShadow(0.5, Color.BLACK));
+        data.yCodes.add(new ArrayList<>());
+
+        yBox.setPrefWidth(95 * yBox.getChildren().size());
+
+        SlideUtils.fillCodeTable(tables, newYTable, data.yCodes.getLast(),
+                data.props.getOperationsSizes().getLast(), CodeTableMode.YMode);
+
+        newYTable.getColumns().get(1).setText("Y" + data.props.getOperationsCount());
+
+        SlideUtils.fillFormatTable(tables, data);
+    }
+
+    private void addFirstYTable() {
+        TableView<SignalEncoding> newYTable = new TableView<>();
+        newYTable.setPrefWidth(180);
+        newYTable.setEditable(true);
+        tables.yTables.add(newYTable);
+        tables.yBox.getChildren().add(newYTable);
+
+        Pane isolator = new Pane();
+        isolator.setPrefWidth(10);
+        yBox.getChildren().add(isolator);
+
+        data.yCodes.add(new ArrayList<>());
+
+        SlideUtils.fillCodeTable(tables, newYTable, data.yCodes.getLast(),
+                data.props.getOperationsSizes().getLast(), CodeTableMode.YMode);
+
+        newYTable.getColumns().get(1).setText("Y" + data.props.getOperationsCount());
     }
 
     private void recolorButton1() {
@@ -257,5 +304,9 @@ public class CMPL_Controller implements Initializable {
 
     private Image findImage(String url) {
         return new Image(Objects.requireNonNull(getClass().getResourceAsStream(url)));
+    }
+
+    private void tablePackage() {
+        tables = new TablePackage(machineTable, formatTable, aTable, xTable, yBox, null);
     }
 }
