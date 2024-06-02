@@ -3,7 +3,6 @@ package app.cmpl_app.datas;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,15 +15,13 @@ public class SignalEncoding {
     private String code;
     private String value;
 
-    public static List<SignalEncoding> getEncodingByBit(int bit) {
+    public static void getEncodingByBit(List<SignalEncoding> list, int bit) {
         int size = (int) Math.pow(2, bit);
-        List<SignalEncoding> result = new ArrayList<>();
+        list.clear();
 
         for (int ind = 0; ind < size; ind++) {
-            result.add(new SignalEncoding(String.format("%" + bit + "s", Integer.toBinaryString(ind))
+            list.add(new SignalEncoding(String.format("%" + bit + "s", Integer.toBinaryString(ind))
                     .replace(' ', '0'), ""));
         }
-
-        return result;
     }
 }

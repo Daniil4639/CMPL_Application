@@ -2,14 +2,10 @@ package app.cmpl_app.utilities;
 
 import app.cmpl_app.datas.*;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.layout.HBox;
-
 import java.util.List;
 
 public class SlideUtils {
@@ -29,6 +25,10 @@ public class SlideUtils {
         for (int rowIndex = 0; rowIndex < data.machineRows.size(); rowIndex++) {
             while (data.machineRows.get(rowIndex).getValues().size() > data.props.getOperationsCount()) {
                 data.machineRows.get(rowIndex).getValues().removeLast();
+            }
+
+            while (data.machineRows.get(rowIndex).getValues().size() < data.props.getOperationsCount()) {
+                data.machineRows.get(rowIndex).getValues().add("");
             }
         }
 
@@ -66,9 +66,10 @@ public class SlideUtils {
 
         tables.machineTable.getItems().addAll(data.machineRows);
 
+        tables.machineTable.setFixedCellSize(25);
         tables.machineTable.setPrefWidth(90 * tables.machineTable.getColumns().size() + 2);
-        tables.machineTable.prefHeightProperty().bind(Bindings.size(tables.formatTable.getItems())
-                .multiply(tables.formatTable.getFixedCellSize()).add(35));
+        tables.machineTable.prefHeightProperty().bind(Bindings.size(tables.machineTable.getItems())
+                .multiply(tables.machineTable.getFixedCellSize()).add(35));
     }
 
     public static void fillFormatTable(TablePackage tables,
@@ -122,7 +123,7 @@ public class SlideUtils {
         table.getItems().clear();
         table.getColumns().clear();
 
-        codes = SignalEncoding.getEncodingByBit(bit);
+        SignalEncoding.getEncodingByBit(codes, bit);
 
         switch (mode) {
             case XMode -> {
@@ -177,6 +178,6 @@ public class SlideUtils {
             }
         }
 
-        return aCodes.size();
+        return res;
     }
 }

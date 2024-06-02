@@ -138,7 +138,6 @@ public class CMPL_Controller implements Initializable {
         borderPanel.toFront();
         upperPanel.toFront();
 
-        modeName1.setText(Integer.toString(SlideUtils.getStages(data.xCode)));
         SlideUtils.fillMachineTable(tables, data);
     }
 

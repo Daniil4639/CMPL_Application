@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -19,6 +20,6 @@ public class MachineTableRow {
     private String address;
 
     public static MachineTableRow getDefaultRow(int valuesCount) {
-        return new MachineTableRow("", Collections.nCopies(valuesCount, ""), "", "", "");
+        return new MachineTableRow("", new ArrayList<>(Collections.nCopies(valuesCount, "")), "", "", "");
     }
 }
