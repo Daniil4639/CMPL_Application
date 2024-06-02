@@ -2,10 +2,13 @@ package app.cmpl_app;
 
 import app.cmpl_app.datas.*;
 import app.cmpl_app.datas.Properties;
+import app.cmpl_app.exceptions.IncorrectFormatException;
+import app.cmpl_app.exceptions.NoDataException;
 import app.cmpl_app.utilities.SlideUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -153,11 +156,28 @@ public class CMPL_Controller implements Initializable {
 
     @FXML
     void switchMode3(MouseEvent event) {
-        recolorButton3();
+        try {
+            SlideUtils.checkMachineTable(machineTable, data.machineRows, data.props);
 
-        contentPanel3.toFront();
-        borderPanel.toFront();
-        upperPanel.toFront();
+            recolorButton3();
+
+            contentPanel3.toFront();
+            borderPanel.toFront();
+            upperPanel.toFront();
+        } catch (NoDataException ex) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning");
+            alert.setHeaderText("NoDataException");
+            alert.setContentText(ex.getMessage());
+            alert.showAndWait();
+
+        } catch (IncorrectFormatException ex) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning");
+            alert.setHeaderText("IncorrectFormatException");
+            alert.setContentText(ex.getMessage());
+            alert.showAndWait();
+        }
     }
 
     @FXML
