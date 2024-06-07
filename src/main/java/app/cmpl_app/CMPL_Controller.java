@@ -2,22 +2,21 @@ package app.cmpl_app;
 
 import app.cmpl_app.datas.*;
 import app.cmpl_app.datas.Properties;
+import app.cmpl_app.datas.encoding.LogicSignalEncoding;
+import app.cmpl_app.datas.encoding.SignalEncoding;
 import app.cmpl_app.exceptions.IncorrectFormatException;
 import app.cmpl_app.exceptions.NoDataException;
+import app.cmpl_app.packages.DataPackage;
+import app.cmpl_app.packages.TablePackage;
 import app.cmpl_app.utilities.SlideUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.net.URL;
@@ -60,6 +59,24 @@ public class CMPL_Controller implements Initializable {
     private HBox yBox;
 
     //------Slide_2--------
+
+    //------Slide_3--------
+
+    @FXML
+    private TableView<ResultTableRow> modelingResultsTable;
+    @FXML
+    private TableView<LogicSignalEncoding> logicCyclesTable;
+
+    @FXML
+    private Label runButton;
+    @FXML
+    private Label stepButton;
+    @FXML
+    private Label saveButton;
+    @FXML
+    private Spinner<Integer> simulationNumericField;
+
+    //------Slide_3--------
 
     //------System--------
 
@@ -107,29 +124,34 @@ public class CMPL_Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        simulationNumericField.setEditable(false);
+        simulationNumericField.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 0));
+        simulationNumericField.getEditor().textProperty().addListener((obs, oldVal, newVal) -> {
+            SlideUtils.fillLogicCycleTable(tables.logicCyclesTable, data, simulationNumericField.getValue());
+            SlideUtils.fillResultsTable(tables.modelingResultsTable, data.results, simulationNumericField.getValue());
+        });
+
         yBox.setFillHeight(false);
         data = new DataPackage();
-        data.aCode = new ArrayList<>();
-        data.xCode = new ArrayList<>();
-        data.yCodes = new ArrayList<>();
 
         tablePackage();
         tables.yTables = new ArrayList<>();
-
-        data.props = Properties.getDefaultProps();
-        data.machineRows = new ArrayList<>();
 
         machineTable.setEditable(true);
         formatTable.setEditable(true);
         aTable.setEditable(true);
         xTable.setEditable(true);
+        logicCyclesTable.setEditable(true);
+        modelingResultsTable.setEditable(false);
 
         addFirstYTable();
 
         SlideUtils.fillFormatTable(tables, data);
-        SlideUtils.fillCodeTable(tables, aTable, data.aCode, data.props.getAddressSize(), CodeTableMode.AMode);
-        SlideUtils.fillCodeTable(tables, xTable, data.xCode, data.props.getLogicSize(), CodeTableMode.XMode);
+        SlideUtils.fillCodeTable(tables, data.logicEncoding, aTable, data.aCode, data.props.getAddressSize(), CodeTableMode.AMode);
+        SlideUtils.fillCodeTable(tables, data.logicEncoding, xTable, data.xCode, data.props.getLogicSize(), CodeTableMode.XMode);
         SlideUtils.fillMachineTable(tables, data);
+        SlideUtils.fillLogicCycleTable(tables.logicCyclesTable, data, 0);
+        SlideUtils.fillResultsTable(tables.modelingResultsTable, data.results, 0);
     }
 
     @FXML
@@ -164,6 +186,8 @@ public class CMPL_Controller implements Initializable {
             contentPanel3.toFront();
             borderPanel.toFront();
             upperPanel.toFront();
+
+            SlideUtils.fillLogicCycleTable(tables.logicCyclesTable, data, simulationNumericField.getValue());
         } catch (NoDataException ex) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Warning");
@@ -252,12 +276,27 @@ public class CMPL_Controller implements Initializable {
 
         yBox.setPrefWidth(95 * yBox.getChildren().size());
 
-        SlideUtils.fillCodeTable(tables, newYTable, data.yCodes.getLast(),
+        SlideUtils.fillCodeTable(tables, data.logicEncoding, newYTable, data.yCodes.getLast(),
                 data.props.getOperationsSizes().getLast(), CodeTableMode.YMode);
 
         newYTable.getColumns().get(1).setText("Y" + data.props.getOperationsCount());
 
         SlideUtils.fillFormatTable(tables, data);
+    }
+
+    @FXML
+    void runButtonClicked(MouseEvent event) {
+
+    }
+
+    @FXML
+    void saveResultButtonClicked(MouseEvent event) {
+
+    }
+
+    @FXML
+    void stepButtonClicked(MouseEvent event) {
+
     }
 
     private void addFirstYTable() {
@@ -273,7 +312,7 @@ public class CMPL_Controller implements Initializable {
 
         data.yCodes.add(new ArrayList<>());
 
-        SlideUtils.fillCodeTable(tables, newYTable, data.yCodes.getLast(),
+        SlideUtils.fillCodeTable(tables, data.logicEncoding, newYTable, data.yCodes.getLast(),
                 data.props.getOperationsSizes().getLast(), CodeTableMode.YMode);
 
         newYTable.getColumns().get(1).setText("Y" + data.props.getOperationsCount());
@@ -326,6 +365,7 @@ public class CMPL_Controller implements Initializable {
     }
 
     private void tablePackage() {
-        tables = new TablePackage(machineTable, formatTable, aTable, xTable, yBox, null);
+        tables = new TablePackage(machineTable, formatTable, aTable, xTable, yBox, null, modelingResultsTable,
+                logicCyclesTable);
     }
 }

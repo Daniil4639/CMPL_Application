@@ -1,13 +1,19 @@
 package app.cmpl_app.utilities;
 
 import app.cmpl_app.datas.*;
+import app.cmpl_app.datas.encoding.LogicSignalEncoding;
+import app.cmpl_app.datas.ResultTableRow;
+import app.cmpl_app.datas.encoding.SignalEncoding;
 import app.cmpl_app.exceptions.IncorrectFormatException;
 import app.cmpl_app.exceptions.NoDataException;
+import app.cmpl_app.packages.DataPackage;
+import app.cmpl_app.packages.TablePackage;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +90,7 @@ public class SlideUtils {
 
         // инициализация столбца A
         TableColumn<Properties, Integer> aCol = ColumnCreator.getFormatIntegerColumn(tables,
-                "A", "addressSize", tables.aTable, data.aCode);
+                "A", "addressSize", tables.aTable, data.aCode, data.logicEncoding);
         tables.formatTable.getColumns().add(aCol);
 
         // инициализация столбцов Y
@@ -96,7 +102,7 @@ public class SlideUtils {
 
         // инициализация столбца X
         TableColumn<Properties, Integer> xCol = ColumnCreator.getFormatIntegerColumn(tables,
-                "X", "logicSize", tables.xTable, data.xCode);
+                "X", "logicSize", tables.xTable, data.xCode, data.logicEncoding);
         tables.formatTable.getColumns().add(xCol);
 
         // инициализация столбца i
@@ -106,7 +112,7 @@ public class SlideUtils {
 
         // инициализация столбца A1
         TableColumn<Properties, Integer> a1Col = ColumnCreator.getFormatIntegerColumn(tables,
-                "A1", "addressSize", tables.aTable, data.aCode);
+                "A1", "addressSize", tables.aTable, data.aCode, data.logicEncoding);
         tables.formatTable.getColumns().add(a1Col);
 
         for (TableColumn<Properties, ?> tableColumn : tables.formatTable.getColumns()) {
@@ -121,7 +127,8 @@ public class SlideUtils {
                 .multiply(tables.formatTable.getFixedCellSize()).add(35));
     }
 
-    public static void fillCodeTable(TablePackage tablePackage, TableView<SignalEncoding> table,
+    public static void fillCodeTable(TablePackage tablePackage, List<LogicSignalEncoding> logicEncodings,
+                                     TableView<SignalEncoding> table,
                                      List<SignalEncoding> codes, int bit, CodeTableMode mode) {
 
         table.getItems().clear();
@@ -131,8 +138,10 @@ public class SlideUtils {
 
         switch (mode) {
             case XMode -> {
-                codes.getFirst().setValue("Const 1");
-                codes.getLast().setValue("Const 0");
+                logicEncodings.clear();
+
+                codes.getFirst().setValue("Const 0");
+                codes.getLast().setValue("Const 1");
             }
             case YMode -> {
                 codes.getFirst().setValue("-");
@@ -145,7 +154,7 @@ public class SlideUtils {
         table.getColumns().add(codeColumn);
 
         // инициализация столбца val
-        TableColumn<SignalEncoding, String> valColumn = ColumnCreator.getSignalEncodingStringTableColumn();
+        TableColumn<SignalEncoding, String> valColumn = ColumnCreator.getSignalEncodingStringTableColumn(mode, logicEncodings);
         table.getColumns().add(valColumn);
 
         for (TableColumn<SignalEncoding, ?> column: table.getColumns()) {
@@ -161,6 +170,79 @@ public class SlideUtils {
         if (mode.equals(CodeTableMode.YMode)) {
         resizeYBox(tablePackage);
         }
+    }
+
+    public static void fillLogicCycleTable(TableView<LogicSignalEncoding> table, DataPackage data, int cycles) {
+
+        table.getColumns().clear();
+        table.getItems().clear();
+
+        if (data.logicEncoding.isEmpty()) {
+            getNotEmptyCodes(data.logicEncoding, data.xCode, cycles);
+        } else {
+
+            for (LogicSignalEncoding logic: data.logicEncoding) {
+                while (logic.getLogicValues().size() < cycles) {
+                    logic.getLogicValues().add(0);
+                }
+                while (logic.getLogicValues().size() > cycles) {
+                    logic.getLogicValues().removeLast();
+                }
+            }
+        }
+
+        TableColumn<LogicSignalEncoding, String> nameColumn = new TableColumn<>("Tact");
+        nameColumn.setCellValueFactory(data1 -> new SimpleStringProperty(data1.getValue().getEncoding().getValue()));
+        nameColumn.setResizable(false);
+        nameColumn.setEditable(false);
+
+        nameColumn.setPrefWidth(90);
+        table.getColumns().add(nameColumn);
+
+        for (int i = 1; i <= cycles; i++) {
+            TableColumn<LogicSignalEncoding, Integer> valColumn = ColumnCreator
+                    .getLogicSignalEncodingIntegerTableColumn(i);
+
+            valColumn.setPrefWidth(90);
+            table.getColumns().add(valColumn);
+        }
+
+        table.getItems().addAll(data.logicEncoding);
+        table.setPrefWidth(table.getColumns().size() * 90 + 2);
+        table.setFixedCellSize(25);
+        table.prefHeightProperty().bind(Bindings.size(table.getItems())
+                .multiply(table.getFixedCellSize()).add(35));
+    }
+
+    public static void fillResultsTable(TableView<ResultTableRow> table, Pair<ResultTableRow, ResultTableRow> results,
+                                        int cycles) {
+
+        table.getColumns().clear();
+        table.getItems().clear();
+
+        results.getKey().resize(cycles);
+        results.getValue().resize(cycles);
+
+        TableColumn<ResultTableRow, String> nameColumn = new TableColumn<>("Tact");
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        nameColumn.setPrefWidth(90);
+        table.getColumns().add(nameColumn);
+
+        for (int i = 0; i < cycles; i++) {
+            int finalI = i;
+
+            TableColumn<ResultTableRow, String> resultColumn = new TableColumn<>(Integer.toString(finalI + 1));
+            resultColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getResults().get(finalI)));
+            resultColumn.setPrefWidth(90);
+            table.getColumns().add(resultColumn);
+        }
+
+        table.getItems().add(results.getKey());
+        table.getItems().add(results.getValue());
+        table.setPrefWidth(table.getColumns().size() * 90 + 2);
+        table.setFixedCellSize(25);
+        table.prefHeightProperty().bind(Bindings.size(table.getItems())
+                .multiply(table.getFixedCellSize()).add(35));
     }
 
     public static void checkMachineTable(TableView<MachineTableRow> machineTable,
@@ -237,5 +319,16 @@ public class SlideUtils {
         }
 
         return res;
+    }
+
+    public static void getNotEmptyCodes(List<LogicSignalEncoding> signals,
+                                                             List<SignalEncoding> codes, int cycles) {
+        signals.clear();
+
+        for (SignalEncoding signal: codes) {
+            if (!signal.getValue().equals("Const 1") && !signal.getValue().equals("Const 0") && !signal.getValue().isEmpty()) {
+                signals.add(new LogicSignalEncoding(signal, cycles));
+            }
+        }
     }
 }

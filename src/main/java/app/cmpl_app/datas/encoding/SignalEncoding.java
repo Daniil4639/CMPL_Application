@@ -1,16 +1,14 @@
-package app.cmpl_app.datas;
+package app.cmpl_app.datas.encoding;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @Setter
 @Getter
 @AllArgsConstructor
-public class SignalEncoding {
+public class SignalEncoding{
 
     private String code;
     private String value;

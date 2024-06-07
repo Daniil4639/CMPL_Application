@@ -3,7 +3,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -17,7 +19,114 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="660.0" prefWidth="1000.0" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.cmpl_app.CMPL_Controller">
    <children>
-      <Pane fx:id="contentPanel3" layoutX="76.0" layoutY="33.0" prefHeight="627.0" prefWidth="924.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 50px; -fx-border-color: #000000; -fx-border-radius: 46px; -fx-border-width: 5px;" />
+      <Pane fx:id="contentPanel3" layoutX="76.0" layoutY="33.0" prefHeight="627.0" prefWidth="924.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 50px; -fx-border-color: #000000; -fx-border-radius: 46px; -fx-border-width: 5px;">
+         <children>
+            <ScrollPane layoutX="81.0" layoutY="415.0" prefHeight="192.0" prefWidth="802.0" style="-fx-border-color: black;">
+               <padding>
+                  <Insets left="10.0" right="10.0" top="10.0" />
+               </padding>
+               <effect>
+                  <DropShadow>
+                     <color>
+                        <Color opacity="0.2800000011920929" />
+                     </color>
+                  </DropShadow>
+               </effect>
+               <content>
+                  <TableView fx:id="modelingResultsTable" prefHeight="70.0" prefWidth="94.0" />
+               </content>
+            </ScrollPane>
+            <Label layoutX="81.0" layoutY="385.0" text="Modeling results:">
+               <font>
+                  <Font name="Arial" size="17.0" />
+               </font>
+            </Label>
+            <Pane layoutX="81.0" layoutY="405.0" prefHeight="3.0" prefWidth="129.0" style="-fx-background-color: #D52A2A; -fx-background-radius: 6px; -fx-border-color: black; -fx-border-radius: 6px;" />
+            <ScrollPane layoutX="81.0" layoutY="113.0" prefHeight="192.0" prefWidth="683.0" style="-fx-border-color: black;">
+               <padding>
+                  <Insets left="10.0" right="10.0" top="10.0" />
+               </padding>
+               <effect>
+                  <DropShadow>
+                     <color>
+                        <Color opacity="0.2800000011920929" />
+                     </color>
+                  </DropShadow>
+               </effect>
+               <content>
+                  <TableView fx:id="logicCyclesTable" prefHeight="80.0" prefWidth="157.0" />
+               </content>
+            </ScrollPane>
+            <Label layoutX="81.0" layoutY="83.0" text="Logic values:">
+               <font>
+                  <Font name="Arial" size="17.0" />
+               </font>
+            </Label>
+            <Pane layoutX="81.0" layoutY="103.0" prefHeight="3.0" prefWidth="99.0" style="-fx-background-color: #D52A2A; -fx-background-radius: 6px; -fx-border-color: black; -fx-border-radius: 6px;" />
+            <Label layoutX="81.0" layoutY="322.0" text="Number of simulation cycles:">
+               <font>
+                  <Font name="Arial" size="17.0" />
+               </font>
+            </Label>
+            <Pane layoutX="81.0" layoutY="342.0" prefHeight="3.0" prefWidth="217.0" style="-fx-background-color: #D52A2A; -fx-background-radius: 6px; -fx-border-color: black; -fx-border-radius: 6px;" />
+            <Spinner fx:id="simulationNumericField" layoutX="307.0" layoutY="322.0" prefHeight="25.0" prefWidth="108.0" />
+            <Label layoutX="531.0" layoutY="321.0" text="Entry stage (enter stage code):">
+               <font>
+                  <Font name="Arial" size="17.0" />
+               </font>
+            </Label>
+            <Pane layoutX="531.0" layoutY="341.0" prefHeight="3.0" prefWidth="231.0" style="-fx-background-color: #D52A2A; -fx-background-radius: 6px; -fx-border-color: black; -fx-border-radius: 6px;" />
+            <TextField fx:id="entryStageField" layoutX="775.0" layoutY="322.0" prefHeight="25.0" prefWidth="108.0" />
+            <VBox layoutX="765.0" layoutY="113.0" prefHeight="192.0" prefWidth="128.0">
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+               <children>
+                  <Label fx:id="runButton" alignment="CENTER" onMouseClicked="#runButtonClicked" prefHeight="54.0" prefWidth="108.0" style="-fx-background-color: #fc625d; -fx-border-color: #363336; -fx-background-radius: 10px; -fx-border-radius: 10px;" text="Run">
+                     <VBox.margin>
+                        <Insets bottom="5.0" />
+                     </VBox.margin>
+                     <effect>
+                        <DropShadow>
+                           <color>
+                              <Color opacity="0.2800000011920929" />
+                           </color>
+                        </DropShadow>
+                     </effect>
+                     <font>
+                        <Font name="Arial" size="17.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="stepButton" alignment="CENTER" layoutX="20.0" layoutY="20.0" onMouseClicked="#stepButtonClicked" prefHeight="54.0" prefWidth="108.0" style="-fx-background-color: #fc625d; -fx-border-color: #363336; -fx-background-radius: 10px; -fx-border-radius: 10px;" text="Step">
+                     <effect>
+                        <DropShadow>
+                           <color>
+                              <Color opacity="0.2800000011920929" />
+                           </color>
+                        </DropShadow>
+                     </effect>
+                     <VBox.margin>
+                        <Insets bottom="5.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font name="Arial" size="17.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="saveButton" alignment="CENTER" layoutX="20.0" layoutY="79.0" onMouseClicked="#saveResultButtonClicked" prefHeight="54.0" prefWidth="108.0" style="-fx-background-color: #fc625d; -fx-border-color: #363336; -fx-background-radius: 10px; -fx-border-radius: 10px;" text="Save">
+                     <effect>
+                        <DropShadow>
+                           <color>
+                              <Color opacity="0.2800000011920929" />
+                           </color>
+                        </DropShadow>
+                     </effect>
+                     <font>
+                        <Font name="Arial" size="17.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+         </children></Pane>
       <Pane fx:id="contentPanel2" layoutX="64.0" layoutY="20.0" prefHeight="627.0" prefWidth="924.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 50px; -fx-border-color: #000000; -fx-border-radius: 46px; -fx-border-width: 5px;">
          <effect>
             <DropShadow />
@@ -75,7 +184,7 @@
                </children>
             </VBox>
             <Pane layoutX="96.0" layoutY="120.0" prefHeight="3.0" prefWidth="327.0" style="-fx-background-color: #D52A2A; -fx-background-radius: 6px; -fx-border-color: black; -fx-border-radius: 6px;" />
-            <ScrollPane layoutX="96.0" layoutY="282.0" prefHeight="326.0" prefWidth="200.0" style="-fx-border-color: black;">
+            <ScrollPane layoutX="96.0" layoutY="282.0" prefHeight="279.0" prefWidth="200.0" style="-fx-border-color: black;">
                <effect>
                   <DropShadow>
                      <color>
@@ -108,7 +217,7 @@
                </font>
             </Label>
             <Pane layoutX="658.0" layoutY="270.0" prefHeight="3.0" prefWidth="120.0" style="-fx-background-color: #D52A2A; -fx-background-radius: 6px; -fx-border-color: black; -fx-border-radius: 6px;" />
-            <ScrollPane layoutX="323.0" layoutY="282.0" prefHeight="326.0" prefWidth="200.0" style="-fx-border-color: black;">
+            <ScrollPane layoutX="323.0" layoutY="282.0" prefHeight="279.0" prefWidth="200.0" style="-fx-border-color: black;">
                <effect>
                   <DropShadow>
                      <color>
@@ -123,7 +232,7 @@
                   <TableView prefHeight="45.0" prefWidth="180.0" fx:id="xTable" />
                </content>
             </ScrollPane>
-            <ScrollPane layoutX="554.0" layoutY="282.0" prefHeight="326.0" prefWidth="327.0" style="-fx-border-color: black;">
+            <ScrollPane layoutX="554.0" layoutY="282.0" prefHeight="279.0" prefWidth="327.0" style="-fx-border-color: black;">
                <effect>
                   <DropShadow>
                      <color>
@@ -135,9 +244,24 @@
                   <Insets left="10.0" right="10.0" top="10.0" />
                </padding>
                <content>
-                  <HBox fx:id="yBox" prefHeight="255.0" prefWidth="190.0" />
+                  <HBox fx:id="yBox" prefHeight="170.0" prefWidth="190.0" />
                </content>
             </ScrollPane>
+            <Label layoutX="323.0" layoutY="561.0" prefHeight="54.0" prefWidth="200.0" text="* the logical conditions &quot;Const 0&quot; and &quot;Const 1&quot; must be present in the code table" wrapText="true">
+               <font>
+                  <Font name="Arial" size="12.0" />
+               </font>
+            </Label>
+            <Label layoutX="554.0" layoutY="561.0" prefHeight="54.0" prefWidth="327.0" text="* each column must contain an empty micro-operation &quot;-&quot;; at least one of the columns must contain the micro-operation &quot;yk&quot; - the end of the program" wrapText="true">
+               <font>
+                  <Font name="Arial" size="12.0" />
+               </font>
+            </Label>
+            <Label layoutX="96.0" layoutY="561.0" prefHeight="54.0" prefWidth="200.0" text="* at least one state must be represented in the code table" wrapText="true">
+               <font>
+                  <Font name="Arial" size="12.0" />
+               </font>
+            </Label>
          </children>
       </Pane>
       <Pane fx:id="contentPanel1" layoutX="52.0" layoutY="7.0" prefHeight="627.0" prefWidth="924.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 50px; -fx-border-color: #000000; -fx-border-radius: 46px; -fx-border-width: 5px;">
@@ -145,7 +269,7 @@
             <DropShadow />
          </effect>
          <children>
-            <ScrollPane layoutX="109.0" layoutY="114.0" prefHeight="491.0" prefWidth="792.0" style="-fx-border-color: black;">
+            <ScrollPane layoutX="109.0" layoutY="114.0" prefHeight="473.0" prefWidth="792.0" style="-fx-border-color: black;">
                <content>
                   <TableView fx:id="machineTable" prefHeight="111.0" prefWidth="243.0">
                     
@@ -159,9 +283,14 @@
                   </DropShadow>
                </effect>
                <padding>
-                  <Insets left="10.0" top="10.0" />
+                  <Insets left="10.0" right="10.0" top="10.0" />
                </padding>
             </ScrollPane>
+            <Label layoutX="109.0" layoutY="587.0" prefHeight="25.0" prefWidth="792.0" text="* if there is no conditional transition address in column A1, use the designation &quot;xxxx&quot;" wrapText="true">
+               <font>
+                  <Font name="Arial" size="12.0" />
+               </font>
+            </Label>
          </children>
       </Pane>
       <VBox fx:id="borderPanel" layoutY="105.0" prefHeight="555.0" prefWidth="141.0" style="-fx-background-color: #000000;">

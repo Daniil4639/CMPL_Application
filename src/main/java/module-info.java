@@ -8,4 +8,6 @@ module app.uapl_app {
     opens app.cmpl_app.datas;
     opens app.cmpl_app to javafx.fxml;
     exports app.cmpl_app;
+    opens app.cmpl_app.packages;
+    opens app.cmpl_app.datas.encoding;
 }
