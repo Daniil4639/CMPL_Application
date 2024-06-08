@@ -245,60 +245,6 @@ public class SlideUtils {
                 .multiply(table.getFixedCellSize()).add(35));
     }
 
-    public static void checkMachineTable(TableView<MachineTableRow> machineTable,
-                                         List<MachineTableRow> machineRows, Properties props)
-            throws NoDataException, IncorrectFormatException {
-
-        List<Integer> listOfProps = makeListOfProps(props);
-
-        int rowNum = 0;
-        for (MachineTableRow row: machineRows) {
-            rowNum++;
-
-            List<String> rowProps = makeListOfFields(row);
-
-            for (int i = 0; i < rowProps.size(); i++) {
-                if (rowProps.get(i).isEmpty()) {
-                    throw new NoDataException("No data in " + machineTable.getColumns().get(i).getText() + " column, "
-                            + rowNum + " row!");
-                }
-
-                boolean formatOk = true;
-                for (char symbol: rowProps.get(i).toCharArray()) {
-                    if (symbol != '0' && symbol != '1') {
-                        formatOk = false;
-                        break;
-                    }
-                }
-
-                if (!formatOk || rowProps.get(i).length() != listOfProps.get(i)) {
-                    throw new IncorrectFormatException("Incorrect data format in "
-                            + machineTable.getColumns().get(i).getText() + " column, " + rowNum + " row!");
-                }
-            }
-        }
-    }
-
-    private static List<String> makeListOfFields(MachineTableRow row) {
-        List<String> res = new ArrayList<>();
-
-        res.add(row.getStage());
-        res.addAll(row.getValues());
-        res.addAll(List.of(row.getLogic(), row.getI(), row.getAddress()));
-
-        return res;
-    }
-
-    private static List<Integer> makeListOfProps(Properties props) {
-        List<Integer> res = new ArrayList<>();
-
-        res.add(props.getAddressSize());
-        res.addAll(props.getOperationsSizes());
-        res.addAll(List.of(props.getLogicSize(), 1, props.getAddressSize()));
-
-        return res;
-    }
-
     private static void resizeYBox(TablePackage tablePackage) {
         double maxHeight = 0;
         for (int i = 0; i < tablePackage.yTables.size(); i++) {

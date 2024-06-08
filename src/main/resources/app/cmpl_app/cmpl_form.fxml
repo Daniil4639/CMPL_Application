@@ -123,6 +123,21 @@
                      <font>
                         <Font name="Arial" size="17.0" />
                      </font>
+                     <VBox.margin>
+                        <Insets bottom="5.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Label fx:id="clearButton1" alignment="CENTER" layoutX="20.0" layoutY="20.0" onMouseClicked="#clearButtonClicked" prefHeight="54.0" prefWidth="108.0" style="-fx-background-color: #fc625d; -fx-border-color: #363336; -fx-background-radius: 10px; -fx-border-radius: 10px;" text="Clear">
+                     <effect>
+                        <DropShadow>
+                           <color>
+                              <Color opacity="0.2800000011920929" />
+                           </color>
+                        </DropShadow>
+                     </effect>
+                     <font>
+                        <Font name="Arial" size="17.0" />
+                     </font>
                   </Label>
                </children>
             </VBox>

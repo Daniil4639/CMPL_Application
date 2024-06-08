@@ -27,4 +27,8 @@ public class ResultTableRow {
             results.removeLast();
         }
     }
+
+    public static void clear(ResultTableRow results) {
+        results.getResults().replaceAll(ignored -> "");
+    }
 }

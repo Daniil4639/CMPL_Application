@@ -4,10 +4,14 @@ import app.cmpl_app.datas.*;
 import app.cmpl_app.datas.Properties;
 import app.cmpl_app.datas.encoding.LogicSignalEncoding;
 import app.cmpl_app.datas.encoding.SignalEncoding;
+import app.cmpl_app.exceptions.IncorrectDataContent;
 import app.cmpl_app.exceptions.IncorrectFormatException;
 import app.cmpl_app.exceptions.NoDataException;
+import app.cmpl_app.exceptions.UnknownCodeException;
 import app.cmpl_app.packages.DataPackage;
 import app.cmpl_app.packages.TablePackage;
+import app.cmpl_app.utilities.CorrectDataCheckUtils;
+import app.cmpl_app.utilities.MachineCalcUtils;
 import app.cmpl_app.utilities.SlideUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -68,13 +72,9 @@ public class CMPL_Controller implements Initializable {
     private TableView<LogicSignalEncoding> logicCyclesTable;
 
     @FXML
-    private Label runButton;
-    @FXML
-    private Label stepButton;
-    @FXML
-    private Label saveButton;
-    @FXML
     private Spinner<Integer> simulationNumericField;
+    @FXML
+    private TextField entryStageField;
 
     //------Slide_3--------
 
@@ -179,7 +179,8 @@ public class CMPL_Controller implements Initializable {
     @FXML
     void switchMode3(MouseEvent event) {
         try {
-            SlideUtils.checkMachineTable(machineTable, data.machineRows, data.props);
+            CorrectDataCheckUtils.checkMachineTable(machineTable, data.machineRows, data.props);
+            CorrectDataCheckUtils.checkCodeTables(data);
 
             recolorButton3();
 
@@ -199,6 +200,13 @@ public class CMPL_Controller implements Initializable {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Warning");
             alert.setHeaderText("IncorrectFormatException");
+            alert.setContentText(ex.getMessage());
+            alert.showAndWait();
+
+        } catch (IncorrectDataContent ex) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning");
+            alert.setHeaderText("IncorrectDataContent");
             alert.setContentText(ex.getMessage());
             alert.showAndWait();
         }
@@ -286,7 +294,27 @@ public class CMPL_Controller implements Initializable {
 
     @FXML
     void runButtonClicked(MouseEvent event) {
+        try {
+            while (MachineCalcUtils.makeStep(tables, data, entryStageField.getText(), simulationNumericField.getValue())) {}
+        } catch (UnknownCodeException ex) {
+            if (!ex.getMessage().equals("With the receipt of the micro command \"yk\" at the last stage, "
+                    + "the program completed its execution!")) {
 
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("UnknownCodeException");
+                alert.setContentText(ex.getMessage());
+                alert.showAndWait();
+            }
+        }
+    }
+
+    @FXML
+    void clearButtonClicked(MouseEvent event) {
+        ResultTableRow.clear(data.results.getKey());
+        ResultTableRow.clear(data.results.getValue());
+
+        SlideUtils.fillResultsTable(tables.modelingResultsTable, data.results, simulationNumericField.getValue());
     }
 
     @FXML
@@ -296,7 +324,15 @@ public class CMPL_Controller implements Initializable {
 
     @FXML
     void stepButtonClicked(MouseEvent event) {
-
+        try {
+            MachineCalcUtils.makeStep(tables, data, entryStageField.getText(), simulationNumericField.getValue());
+        } catch (UnknownCodeException ex) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("UnknownCodeException");
+            alert.setContentText(ex.getMessage());
+            alert.showAndWait();
+        }
     }
 
     private void addFirstYTable() {
