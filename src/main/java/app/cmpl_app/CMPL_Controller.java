@@ -22,7 +22,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
+import javafx.stage.Window;
+import javafx.util.Pair;
 
+import java.io.File;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.*;
 
@@ -43,6 +48,11 @@ public class CMPL_Controller implements Initializable {
 
     private DataPackage data;
     private TablePackage tables;
+
+    private final FileChooser fileChooser = new FileChooser();
+
+    @FXML
+    private AnchorPane generalPanel;
 
     //------Slide_1--------
 
@@ -123,7 +133,7 @@ public class CMPL_Controller implements Initializable {
     //------System--------
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    public void initialize(URL url, ResourceBundle resourceBundle) {;
         simulationNumericField.setEditable(false);
         simulationNumericField.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 0));
         simulationNumericField.getEditor().textProperty().addListener((obs, oldVal, newVal) -> {
@@ -319,7 +329,22 @@ public class CMPL_Controller implements Initializable {
 
     @FXML
     void saveResultButtonClicked(MouseEvent event) {
+        fileChooser.setTitle("Save results");
+        fileChooser.setInitialFileName("My_results");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("text file", "*.txt"));
 
+        try {
+            File file = fileChooser.showSaveDialog(generalPanel.getScene().getWindow());
+            fileChooser.setInitialDirectory(file.getParentFile());
+
+            Pair<String, String> resultStrings = getResultStrings();
+
+            PrintWriter printWriter = new PrintWriter(file);
+            printWriter.println(resultStrings.getKey());
+            printWriter.println("=".repeat(resultStrings.getKey().length()));
+            printWriter.println(resultStrings.getValue());
+            printWriter.close();
+        } catch (Exception ignored) {}
     }
 
     @FXML
@@ -352,6 +377,45 @@ public class CMPL_Controller implements Initializable {
                 data.props.getOperationsSizes().getLast(), CodeTableMode.YMode);
 
         newYTable.getColumns().get(1).setText("Y" + data.props.getOperationsCount());
+    }
+
+    private Pair<String, String> getResultStrings() {
+        int maxLen = 0;
+        for (String str: tables.modelingResultsTable.getItems().getFirst().getResults()) {
+            if (str.length() > maxLen) {
+                maxLen = str.length();
+            }
+        }
+        for (String str: tables.modelingResultsTable.getItems().getLast().getResults()) {
+            if (str.length() > maxLen) {
+                maxLen = str.length();
+            }
+        }
+
+        maxLen += 4;
+        StringBuilder resStage = new StringBuilder("||");
+        StringBuilder resY = new StringBuilder("||");
+
+        for (int i = 0; i < tables.modelingResultsTable.getItems().getFirst().getResults().size(); i++) {
+            String str1 = tables.modelingResultsTable.getItems().getFirst().getResults().get(i);
+            String str2 = tables.modelingResultsTable.getItems().getLast().getResults().get(i);
+
+            if (str1.isEmpty()) {
+                continue;
+            }
+
+            int currLen1 = maxLen - str1.length();
+            resStage.append(" ".repeat(currLen1 / 2)).append(str1);
+            currLen1 -= currLen1 / 2;
+            resStage.append(" ".repeat(currLen1)).append("||");
+
+            int currLen2 = maxLen - str2.length();
+            resY.append(" ".repeat(currLen2 / 2)).append(str2);
+            currLen2 -= currLen2 / 2;
+            resY.append(" ".repeat(currLen2)).append("||");
+        }
+
+        return new Pair<>(resStage.toString(), resY.toString());
     }
 
     private void recolorButton1() {

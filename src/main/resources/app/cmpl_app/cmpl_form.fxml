@@ -17,7 +17,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="660.0" prefWidth="1000.0" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.cmpl_app.CMPL_Controller">
+<AnchorPane fx:id="generalPanel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="660.0" prefWidth="1000.0" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.cmpl_app.CMPL_Controller">
    <children>
       <Pane fx:id="contentPanel3" layoutX="76.0" layoutY="33.0" prefHeight="627.0" prefWidth="924.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 50px; -fx-border-color: #000000; -fx-border-radius: 46px; -fx-border-width: 5px;">
          <children>
