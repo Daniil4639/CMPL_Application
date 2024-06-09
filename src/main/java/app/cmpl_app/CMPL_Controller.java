@@ -23,7 +23,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
-import javafx.stage.Window;
 import javafx.util.Pair;
 
 import java.io.File;
@@ -46,10 +45,10 @@ public class CMPL_Controller implements Initializable {
     private final Image mode3White = findImage("/icons/modeling.png");
     private final Image mode3Black = findImage("/icons/modeling_1.png");
 
+    private final FileChooser fileChooser = new FileChooser();
+
     private DataPackage data;
     private TablePackage tables;
-
-    private final FileChooser fileChooser = new FileChooser();
 
     @FXML
     private AnchorPane generalPanel;
@@ -128,7 +127,7 @@ public class CMPL_Controller implements Initializable {
     @FXML
     private Pane openProjectButton;
     @FXML
-    private Pane instructionButton;
+    private Pane saveProjectButton;
 
     //------System--------
 
@@ -247,15 +246,15 @@ public class CMPL_Controller implements Initializable {
     }
 
     @FXML
-    void instructionButtonEntered(MouseEvent event) {
-        instructionButton.setStyle(upperButtonStyleActive);
-        instructionButton.setEffect(new DropShadow());
+    void saveProjectButtonEntered(MouseEvent event) {
+        saveProjectButton.setStyle(upperButtonStyleActive);
+        saveProjectButton.setEffect(new DropShadow());
     }
 
     @FXML
-    void instructionButtonExited(MouseEvent event) {
-        instructionButton.setStyle(upperButtonStyleInactive);
-        instructionButton.setEffect(null);
+    void saveProjectButtonExited(MouseEvent event) {
+        saveProjectButton.setStyle(upperButtonStyleInactive);
+        saveProjectButton.setEffect(null);
     }
 
     @FXML
@@ -358,6 +357,42 @@ public class CMPL_Controller implements Initializable {
             alert.setContentText(ex.getMessage());
             alert.showAndWait();
         }
+    }
+
+    @FXML
+    void newProjectButtonClicked(MouseEvent event) {
+        switchMode1(null);
+
+        while (yBox.getChildren().size() > 1) {
+            yBox.getChildren().removeLast();
+            yBox.getChildren().removeLast();
+        }
+
+        data = new DataPackage();
+
+        simulationNumericField.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 0));
+        entryStageField.setText("");
+
+        tables.yTables.clear();
+
+        addFirstYTable();
+
+        SlideUtils.fillFormatTable(tables, data);
+        SlideUtils.fillCodeTable(tables, data.logicEncoding, aTable, data.aCode, data.props.getAddressSize(), CodeTableMode.AMode);
+        SlideUtils.fillCodeTable(tables, data.logicEncoding, xTable, data.xCode, data.props.getLogicSize(), CodeTableMode.XMode);
+        SlideUtils.fillMachineTable(tables, data);
+        SlideUtils.fillLogicCycleTable(tables.logicCyclesTable, data, 0);
+        SlideUtils.fillResultsTable(tables.modelingResultsTable, data.results, 0);
+    }
+
+    @FXML
+    void openProjectButtonClicked(MouseEvent event) {
+
+    }
+
+    @FXML
+    void saveProjectButtonClicked(MouseEvent event) {
+
     }
 
     private void addFirstYTable() {

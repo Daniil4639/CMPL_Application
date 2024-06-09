@@ -104,7 +104,7 @@ public class MachineCalcUtils {
         } else {
             for (LogicSignalEncoding signal: data.logicEncoding) {
                 if (signal.getEncoding().getValue().equals(logicConditionName)) {
-                    logicVal = signal.getLogicValues().get(placeIndex);
+                    logicVal = signal.getLogicValues().get(placeIndex - 1);
                 }
             }
         }

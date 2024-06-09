@@ -427,11 +427,11 @@
                   </HBox>
                </children>
             </VBox>
-            <HBox alignment="CENTER" layoutX="625.0" layoutY="32.0" prefHeight="41.0" prefWidth="361.0">
+            <HBox alignment="CENTER" layoutX="611.0" layoutY="32.0" prefHeight="41.0" prefWidth="390.0">
                <children>
-                  <Pane fx:id="newProjectButton" onMouseEntered="#newProjectButtonEntered" onMouseExited="#newProjectButtonExited" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #272727; -fx-background-radius: 3px;">
+                  <Pane fx:id="newProjectButton" onMouseClicked="#newProjectButtonClicked" onMouseEntered="#newProjectButtonEntered" onMouseExited="#newProjectButtonExited" prefHeight="200.0" prefWidth="210.0" style="-fx-background-color: #272727; -fx-background-radius: 3px;">
                      <children>
-                        <Text fill="WHITE" layoutX="5.0" layoutY="20.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New project">
+                        <Text fill="WHITE" layoutX="10.0" layoutY="21.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New project">
                            <font>
                               <Font size="15.0" />
                            </font>
@@ -441,9 +441,9 @@
                         <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
                      </HBox.margin>
                   </Pane>
-                  <Pane fx:id="openProjectButton" layoutX="10.0" layoutY="10.0" onMouseEntered="#openProjectButtonEntered" onMouseExited="#openProjectButtonExited" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #272727; -fx-background-radius: 3px;">
+                  <Pane fx:id="openProjectButton" layoutX="10.0" layoutY="10.0" onMouseClicked="#openProjectButtonClicked" onMouseEntered="#openProjectButtonEntered" onMouseExited="#openProjectButtonExited" prefHeight="200.0" prefWidth="210.0" style="-fx-background-color: #272727; -fx-background-radius: 3px;">
                      <children>
-                        <Text fill="WHITE" layoutX="2.0" layoutY="20.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Open project">
+                        <Text fill="WHITE" layoutX="7.0" layoutY="20.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Open project">
                            <font>
                               <Font size="15.0" />
                            </font>
@@ -453,9 +453,9 @@
                         <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
                      </HBox.margin>
                   </Pane>
-                  <Pane fx:id="instructionButton" layoutX="110.0" layoutY="10.0" onMouseEntered="#instructionButtonEntered" onMouseExited="#instructionButtonExited" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #272727; -fx-background-radius: 3px;">
+                  <Pane fx:id="saveProjectButton" layoutX="110.0" layoutY="10.0" onMouseClicked="#saveProjectButtonClicked" onMouseEntered="#saveProjectButtonEntered" onMouseExited="#saveProjectButtonExited" prefHeight="200.0" prefWidth="210.0" style="-fx-background-color: #272727; -fx-background-radius: 3px;">
                      <children>
-                        <Text fill="WHITE" layoutX="10.0" layoutY="21.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Instruction">
+                        <Text fill="WHITE" layoutX="9.0" layoutY="20.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Save project">
                            <font>
                               <Font size="15.0" />
                            </font>
