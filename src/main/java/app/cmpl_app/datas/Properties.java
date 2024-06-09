@@ -15,19 +15,6 @@ public class Properties {
     private int logicSize;
     private int addressSize;
 
-    public boolean isCorrect() {
-        if (operationsCount == -1 || logicSize == -1 || addressSize == -1) {
-            return false;
-        }
-        for (Integer operation: operationsSizes) {
-            if (operation == -1) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     public static Properties getDefaultProps() {
         Properties props = new Properties();
         props.operationsCount = 1;

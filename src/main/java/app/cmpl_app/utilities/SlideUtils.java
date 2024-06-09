@@ -214,14 +214,14 @@ public class SlideUtils {
                 .multiply(table.getFixedCellSize()).add(35));
     }
 
-    public static void fillResultsTable(TableView<ResultTableRow> table, Pair<ResultTableRow, ResultTableRow> results,
+    public static void fillResultsTable(TableView<ResultTableRow> table, List<ResultTableRow> results,
                                         int cycles) {
 
         table.getColumns().clear();
         table.getItems().clear();
 
-        results.getKey().resize(cycles);
-        results.getValue().resize(cycles);
+        results.getFirst().resize(cycles);
+        results.getLast().resize(cycles);
 
         TableColumn<ResultTableRow, String> nameColumn = new TableColumn<>("Tact");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -237,8 +237,7 @@ public class SlideUtils {
             table.getColumns().add(resultColumn);
         }
 
-        table.getItems().add(results.getKey());
-        table.getItems().add(results.getValue());
+        table.getItems().addAll(results);
         table.setPrefWidth(table.getColumns().size() * 90 + 2);
         table.setFixedCellSize(25);
         table.prefHeightProperty().bind(Bindings.size(table.getItems())

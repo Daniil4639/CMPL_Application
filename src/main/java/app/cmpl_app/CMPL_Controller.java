@@ -9,10 +9,12 @@ import app.cmpl_app.exceptions.IncorrectFormatException;
 import app.cmpl_app.exceptions.NoDataException;
 import app.cmpl_app.exceptions.UnknownCodeException;
 import app.cmpl_app.packages.DataPackage;
+import app.cmpl_app.packages.SaveProjectPackage;
 import app.cmpl_app.packages.TablePackage;
 import app.cmpl_app.utilities.CorrectDataCheckUtils;
 import app.cmpl_app.utilities.MachineCalcUtils;
 import app.cmpl_app.utilities.SlideUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -24,9 +26,7 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.util.Pair;
-
-import java.io.File;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.URL;
 import java.util.*;
 
@@ -44,8 +44,6 @@ public class CMPL_Controller implements Initializable {
     private final Image mode2Black = findImage("/icons/engine_1.png");
     private final Image mode3White = findImage("/icons/modeling.png");
     private final Image mode3Black = findImage("/icons/modeling_1.png");
-
-    private final FileChooser fileChooser = new FileChooser();
 
     private DataPackage data;
     private TablePackage tables;
@@ -320,21 +318,23 @@ public class CMPL_Controller implements Initializable {
 
     @FXML
     void clearButtonClicked(MouseEvent event) {
-        ResultTableRow.clear(data.results.getKey());
-        ResultTableRow.clear(data.results.getValue());
+        ResultTableRow.clear(data.results.getFirst());
+        ResultTableRow.clear(data.results.getLast());
 
         SlideUtils.fillResultsTable(tables.modelingResultsTable, data.results, simulationNumericField.getValue());
     }
 
     @FXML
     void saveResultButtonClicked(MouseEvent event) {
-        fileChooser.setTitle("Save results");
-        fileChooser.setInitialFileName("My_results");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("text file", "*.txt"));
+        FileChooser fileSaver = new FileChooser();
+
+        fileSaver.setTitle("Save results");
+        fileSaver.setInitialFileName("My_results");
+        fileSaver.getExtensionFilters().add(new FileChooser.ExtensionFilter("text file", "*.txt"));
 
         try {
-            File file = fileChooser.showSaveDialog(generalPanel.getScene().getWindow());
-            fileChooser.setInitialDirectory(file.getParentFile());
+            File file = fileSaver.showSaveDialog(generalPanel.getScene().getWindow());
+            fileSaver.setInitialDirectory(file.getParentFile());
 
             Pair<String, String> resultStrings = getResultStrings();
 
@@ -343,7 +343,14 @@ public class CMPL_Controller implements Initializable {
             printWriter.println("=".repeat(resultStrings.getKey().length()));
             printWriter.println(resultStrings.getValue());
             printWriter.close();
-        } catch (Exception ignored) {}
+
+        } catch (Exception ex) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning");
+            alert.setHeaderText("Saving results error");
+            alert.setContentText(ex.getMessage());
+            alert.showAndWait();
+        }
     }
 
     @FXML
@@ -387,12 +394,128 @@ public class CMPL_Controller implements Initializable {
 
     @FXML
     void openProjectButtonClicked(MouseEvent event) {
+        switchMode1(null);
 
+        FileChooser fileOpener = new FileChooser();
+
+        fileOpener.setTitle("Open project");
+        fileOpener.getExtensionFilters().add(new FileChooser.ExtensionFilter("CMPL_data", "*.cmpl"));
+
+        try {
+            File file = fileOpener.showOpenDialog(generalPanel.getScene().getWindow());
+            fileOpener.setInitialDirectory(file.getParentFile());
+
+            ObjectMapper mapper = new ObjectMapper();
+            SaveProjectPackage projectPackage = mapper.readValue(file, SaveProjectPackage.class);
+
+            simulationNumericField.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100,
+                    projectPackage.getCycles()));
+            entryStageField.setText(projectPackage.getEntryStage());
+
+            data.props = projectPackage.getData().props;
+            data.machineRows = projectPackage.getData().machineRows;
+            data.aCode = projectPackage.getData().aCode;
+            data.xCode = projectPackage.getData().xCode;
+            data.yCodes = projectPackage.getData().yCodes;
+            data.results = projectPackage.getData().results;
+
+            List<List<SignalEncoding>> copyYCodes = new ArrayList<>();
+            for (int i = 0; i < data.yCodes.size(); i++) {
+                List<SignalEncoding> copyList = new ArrayList<>();
+                for (int j = 0; j < data.yCodes.get(i).size(); j++) {
+                    copyList.add(data.yCodes.get(i).get(j).copy());
+                }
+                copyYCodes.add(copyList);
+            }
+            data.yCodes.clear();
+
+            yBox.getChildren().clear();
+            for (int i = 0; i < copyYCodes.size(); i++) {
+                TableView<SignalEncoding> newYTable = new TableView<>();
+                newYTable.setPrefWidth(180);
+                newYTable.setEditable(true);
+                tables.yTables.add(newYTable);
+                yBox.getChildren().add(newYTable);
+
+                Pane isolator = new Pane();
+                isolator.setPrefWidth(10);
+                yBox.getChildren().add(isolator);
+
+                data.yCodes.add(new ArrayList<>());
+
+                yBox.setPrefWidth(95 * yBox.getChildren().size());
+
+                SlideUtils.fillCodeTable(tables, data.logicEncoding, newYTable, data.yCodes.getLast(),
+                        data.props.getOperationsSizes().get(i), CodeTableMode.YMode);
+
+                newYTable.getColumns().get(1).setText("Y" + (i + 1));
+
+                data.yCodes.set(i, copyYCodes.get(i));
+                newYTable.getItems().clear();
+                newYTable.getItems().addAll(data.yCodes.get(i));
+            }
+
+            SlideUtils.fillFormatTable(tables, data);
+
+            List<SignalEncoding> copyACodes = new ArrayList<>();
+            for (int i = 0; i < data.aCode.size(); i++) {
+                copyACodes.add(data.aCode.get(i).copy());
+            }
+            SlideUtils.fillCodeTable(tables, data.logicEncoding, aTable, data.aCode, data.props.getAddressSize(), CodeTableMode.AMode);
+            data.aCode = copyACodes;
+            tables.aTable.getItems().clear();
+            tables.aTable.getItems().addAll(data.aCode);
+
+            List<SignalEncoding> copyXCodes = new ArrayList<>();
+            for (int i = 0; i < data.xCode.size(); i++) {
+                copyXCodes.add(data.xCode.get(i).copy());
+            }
+            SlideUtils.fillCodeTable(tables, data.logicEncoding, xTable, data.xCode, data.props.getLogicSize(), CodeTableMode.XMode);
+            data.xCode = copyXCodes;
+            tables.xTable.getItems().clear();
+            tables.xTable.getItems().addAll(data.xCode);
+
+            SlideUtils.fillMachineTable(tables, data);
+
+            data.logicEncoding = projectPackage.getData().logicEncoding;
+            SlideUtils.fillLogicCycleTable(tables.logicCyclesTable, data, simulationNumericField.getValue());
+
+            SlideUtils.fillResultsTable(tables.modelingResultsTable, data.results, simulationNumericField.getValue());
+
+        } catch (Exception ex) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning");
+            alert.setHeaderText("Saving project error");
+            alert.setContentText(ex.getMessage());
+            alert.showAndWait();
+        }
     }
 
     @FXML
     void saveProjectButtonClicked(MouseEvent event) {
+        FileChooser fileSaver = new FileChooser();
 
+        SaveProjectPackage projectPackage = new SaveProjectPackage(simulationNumericField.getValue(),
+                entryStageField.getText(), data);
+
+        fileSaver.setTitle("Save project");
+        fileSaver.setInitialFileName("My_project");
+        fileSaver.getExtensionFilters().add(new FileChooser.ExtensionFilter("CMPL_data", "*.cmpl"));
+
+        try {
+            File file = fileSaver.showSaveDialog(generalPanel.getScene().getWindow());
+            fileSaver.setInitialDirectory(file.getParentFile());
+
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.writeValue(file, projectPackage);
+
+        } catch (Exception ex) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning");
+            alert.setHeaderText("Saving project error");
+            alert.setContentText(ex.getMessage());
+            alert.showAndWait();
+        }
     }
 
     private void addFirstYTable() {

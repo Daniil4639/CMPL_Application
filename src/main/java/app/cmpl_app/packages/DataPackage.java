@@ -5,7 +5,6 @@ import app.cmpl_app.datas.Properties;
 import app.cmpl_app.datas.encoding.LogicSignalEncoding;
 import app.cmpl_app.datas.ResultTableRow;
 import app.cmpl_app.datas.encoding.SignalEncoding;
-import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,7 @@ public class DataPackage {
     public List<List<SignalEncoding>> yCodes;
 
     public List<LogicSignalEncoding> logicEncoding;
-    public Pair<ResultTableRow, ResultTableRow> results;
+    public List<ResultTableRow> results;
 
     public DataPackage() {
         aCode = new ArrayList<>();
@@ -31,6 +30,6 @@ public class DataPackage {
         props = Properties.getDefaultProps();
         machineRows = new ArrayList<>();
 
-        results = new Pair<>(new ResultTableRow("A"), new ResultTableRow("Y"));
+        results = new ArrayList<>(List.of(new ResultTableRow("A"), new ResultTableRow("Y")));
     }
 }

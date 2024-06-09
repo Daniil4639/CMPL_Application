@@ -2,12 +2,14 @@ package app.cmpl_app.datas.encoding;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.util.List;
 
 @Setter
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class SignalEncoding{
 
     private String code;
@@ -18,8 +20,14 @@ public class SignalEncoding{
         list.clear();
 
         for (int ind = 0; ind < size; ind++) {
-            list.add(new SignalEncoding(String.format("%" + bit + "s", Integer.toBinaryString(ind))
-                    .replace(' ', '0'), ""));
+            String code = String.format("%" + bit + "s", Integer.toBinaryString(ind))
+                    .replace(' ', '0');
+
+            list.add(new SignalEncoding(code, ""));
         }
+    }
+
+    public SignalEncoding copy() {
+        return new SignalEncoding(this.code, this.value);
     }
 }
