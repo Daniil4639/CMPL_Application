@@ -29,12 +29,13 @@ public class SlideUtils {
         // проверка и корректировка массива микроопераций
         int stagesCount = getStages(data.aCode);
         while (data.machineRows.size() > stagesCount) {
-            data.machineRows.removeLast();
+            data.machineRows.remove(data.machineRows.size() - 1);
         }
 
         for (int rowIndex = 0; rowIndex < data.machineRows.size(); rowIndex++) {
             while (data.machineRows.get(rowIndex).getValues().size() > data.props.getOperationsCount()) {
-                data.machineRows.get(rowIndex).getValues().removeLast();
+                data.machineRows.get(rowIndex).getValues().remove(data.machineRows
+                        .get(rowIndex).getValues().size() - 1);
             }
 
             while (data.machineRows.get(rowIndex).getValues().size() < data.props.getOperationsCount()) {
@@ -137,14 +138,16 @@ public class SlideUtils {
         SignalEncoding.getEncodingByBit(codes, bit);
 
         switch (mode) {
-            case XMode -> {
+            case XMode: {
                 logicEncodings.clear();
 
-                codes.getFirst().setValue("Const 0");
-                codes.getLast().setValue("Const 1");
+                codes.get(0).setValue("Const 0");
+                codes.get(codes.size() - 1).setValue("Const 1");
+                break;
             }
-            case YMode -> {
-                codes.getFirst().setValue("-");
+            case YMode: {
+                codes.get(0).setValue("-");
+                break;
             }
         }
 
@@ -186,7 +189,7 @@ public class SlideUtils {
                     logic.getLogicValues().add(0);
                 }
                 while (logic.getLogicValues().size() > cycles) {
-                    logic.getLogicValues().removeLast();
+                    logic.getLogicValues().remove(logic.getLogicValues().size() - 1);
                 }
             }
         }
@@ -220,8 +223,8 @@ public class SlideUtils {
         table.getColumns().clear();
         table.getItems().clear();
 
-        results.getFirst().resize(cycles);
-        results.getLast().resize(cycles);
+        results.get(0).resize(cycles);
+        results.get(1).resize(cycles);
 
         TableColumn<ResultTableRow, String> nameColumn = new TableColumn<>("Tact");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));

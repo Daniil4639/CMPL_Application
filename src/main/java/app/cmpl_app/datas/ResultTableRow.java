@@ -28,7 +28,7 @@ public class ResultTableRow {
             results.add("");
         }
         while (length < results.size()) {
-            results.removeLast();
+            results.remove(results.size() - 1);
         }
     }
 

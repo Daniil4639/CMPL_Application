@@ -3,7 +3,6 @@ module app.uapl_app {
     requires javafx.fxml;
     requires java.desktop;
     requires static lombok;
-    requires commons.lang3;
     requires com.fasterxml.jackson.databind;
 
     opens app.cmpl_app.datas;

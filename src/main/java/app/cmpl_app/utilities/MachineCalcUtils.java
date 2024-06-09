@@ -26,15 +26,15 @@ public class MachineCalcUtils {
                         row.getValues().get(operationIndex)));
             }
 
-            tables.modelingResultsTable.getItems().getFirst().getResults().set(placeIndex,
+            tables.modelingResultsTable.getItems().get(0).getResults().set(placeIndex,
                     findStageWithCode(data.aCode, stage).getValue());
 
-            if (resultOperation.isEmpty()) {
-                tables.modelingResultsTable.getItems().getLast().getResults().set(placeIndex,
-                        resultOperation.toString());
+            if (resultOperation.toString().isEmpty()) {
+                tables.modelingResultsTable.getItems().get(tables.modelingResultsTable.getItems().size() - 1)
+                        .getResults().set(placeIndex, resultOperation.toString());
             } else {
-                tables.modelingResultsTable.getItems().getLast().getResults().set(placeIndex,
-                        resultOperation.substring(2));
+                tables.modelingResultsTable.getItems().get(tables.modelingResultsTable.getItems().size() - 1)
+                        .getResults().set(placeIndex, resultOperation.substring(2));
             }
 
             SlideUtils.fillResultsTable(tables.modelingResultsTable, data.results, cycles);
@@ -51,7 +51,7 @@ public class MachineCalcUtils {
             }
             return startStage;
         } else {
-            String pastStage = tables.modelingResultsTable.getItems().getFirst().getResults().get(placeIndex - 1);
+            String pastStage = tables.modelingResultsTable.getItems().get(0).getResults().get(placeIndex - 1);
             for (SignalEncoding signal: data.aCode) {
                 if (signal.getValue().equals(pastStage)) {
                     pastStage = signal.getCode();
@@ -145,7 +145,7 @@ public class MachineCalcUtils {
 
     private static int getResultPlaceIndex(TableView<ResultTableRow> resultTable) {
         int index = -1;
-        for (String res: resultTable.getItems().getFirst().getResults()) {
+        for (String res: resultTable.getItems().get(0).getResults()) {
             index++;
 
             if (res.isEmpty()) {

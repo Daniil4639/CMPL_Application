@@ -262,8 +262,8 @@ public class CMPL_Controller implements Initializable {
             data.props.setOperationsCount(data.props.getOperationsCount() - 1);
 
             tables.yTables.remove(data.props.getOperationsCount());
-            yBox.getChildren().removeLast();
-            yBox.getChildren().removeLast();
+            yBox.getChildren().remove(yBox.getChildren().size() - 1);
+            yBox.getChildren().remove(yBox.getChildren().size() - 1);
             data.yCodes.remove(data.props.getOperationsCount());
 
             yBox.setPrefWidth(95 * yBox.getChildren().size());
@@ -291,8 +291,8 @@ public class CMPL_Controller implements Initializable {
 
         yBox.setPrefWidth(95 * yBox.getChildren().size());
 
-        SlideUtils.fillCodeTable(tables, data.logicEncoding, newYTable, data.yCodes.getLast(),
-                data.props.getOperationsSizes().getLast(), CodeTableMode.YMode);
+        SlideUtils.fillCodeTable(tables, data.logicEncoding, newYTable, data.yCodes.get(data.yCodes.size() - 1),
+                data.props.getOperationsSizes().get(data.props.getOperationsSizes().size() - 1), CodeTableMode.YMode);
 
         newYTable.getColumns().get(1).setText("Y" + data.props.getOperationsCount());
 
@@ -318,8 +318,8 @@ public class CMPL_Controller implements Initializable {
 
     @FXML
     void clearButtonClicked(MouseEvent event) {
-        ResultTableRow.clear(data.results.getFirst());
-        ResultTableRow.clear(data.results.getLast());
+        ResultTableRow.clear(data.results.get(0));
+        ResultTableRow.clear(data.results.get(1));
 
         SlideUtils.fillResultsTable(tables.modelingResultsTable, data.results, simulationNumericField.getValue());
     }
@@ -371,8 +371,8 @@ public class CMPL_Controller implements Initializable {
         switchMode1(null);
 
         while (yBox.getChildren().size() > 1) {
-            yBox.getChildren().removeLast();
-            yBox.getChildren().removeLast();
+            yBox.getChildren().remove(yBox.getChildren().size() - 1);
+            yBox.getChildren().remove(yBox.getChildren().size() - 1);
         }
 
         data = new DataPackage();
@@ -445,7 +445,7 @@ public class CMPL_Controller implements Initializable {
 
                 yBox.setPrefWidth(95 * yBox.getChildren().size());
 
-                SlideUtils.fillCodeTable(tables, data.logicEncoding, newYTable, data.yCodes.getLast(),
+                SlideUtils.fillCodeTable(tables, data.logicEncoding, newYTable, data.yCodes.get(data.yCodes.size() - 1),
                         data.props.getOperationsSizes().get(i), CodeTableMode.YMode);
 
                 newYTable.getColumns().get(1).setText("Y" + (i + 1));
@@ -531,20 +531,22 @@ public class CMPL_Controller implements Initializable {
 
         data.yCodes.add(new ArrayList<>());
 
-        SlideUtils.fillCodeTable(tables, data.logicEncoding, newYTable, data.yCodes.getLast(),
-                data.props.getOperationsSizes().getLast(), CodeTableMode.YMode);
+        SlideUtils.fillCodeTable(tables, data.logicEncoding, newYTable, data.yCodes.get(data.yCodes.size() - 1),
+                data.props.getOperationsSizes().get(data.props.getOperationsSizes().size() - 1), CodeTableMode.YMode);
 
         newYTable.getColumns().get(1).setText("Y" + data.props.getOperationsCount());
     }
 
     private Pair<String, String> getResultStrings() {
         int maxLen = 0;
-        for (String str: tables.modelingResultsTable.getItems().getFirst().getResults()) {
+        for (String str: tables.modelingResultsTable.getItems().get(0).getResults()) {
             if (str.length() > maxLen) {
                 maxLen = str.length();
             }
         }
-        for (String str: tables.modelingResultsTable.getItems().getLast().getResults()) {
+        for (String str: tables.modelingResultsTable.getItems().get(tables.modelingResultsTable.getItems().size() - 1)
+                .getResults()) {
+
             if (str.length() > maxLen) {
                 maxLen = str.length();
             }
@@ -554,9 +556,9 @@ public class CMPL_Controller implements Initializable {
         StringBuilder resStage = new StringBuilder("||");
         StringBuilder resY = new StringBuilder("||");
 
-        for (int i = 0; i < tables.modelingResultsTable.getItems().getFirst().getResults().size(); i++) {
-            String str1 = tables.modelingResultsTable.getItems().getFirst().getResults().get(i);
-            String str2 = tables.modelingResultsTable.getItems().getLast().getResults().get(i);
+        for (int i = 0; i < tables.modelingResultsTable.getItems().get(0).getResults().size(); i++) {
+            String str1 = tables.modelingResultsTable.getItems().get(0).getResults().get(i);
+            String str2 = tables.modelingResultsTable.getItems().get(1).getResults().get(i);
 
             if (str1.isEmpty()) {
                 continue;

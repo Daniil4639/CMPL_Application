@@ -155,12 +155,8 @@ public class ColumnCreator {
 
     private static CodeTableMode convertStringToMode(String value) {
         switch (value) {
-            case "logicSize" -> {
-                return CodeTableMode.XMode;
-            }
-            case "addressSize" -> {
-                return CodeTableMode.AMode;
-            }
+            case "logicSize": return CodeTableMode.XMode;
+            case "addressSize": return CodeTableMode.AMode;
         }
 
         return CodeTableMode.Unknown;
